@@ -1,1 +1,11 @@
 # AI-Based Legal Document Assistant Dependencies
+langchain
+llama-index
+fastapi
+uvicorn
+sentence-transformers
+chromadb
+pymupdf
+pytesseract
+pillow
+python-dotenv
