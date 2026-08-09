@@ -1,0 +1,49 @@
+
+[PAGE 1]
+LABOUR LAW COMPLIANCE — SMALL BUSINESS
+OVERVIEW
+This document provides a general overview of key labour law compliance requirements applicable
+to small businesses employing staff in India. This is general informational content, not
+professional advice.
+1. Key Applicable Laws
+• Employees' Provident Fund and Miscellaneous Provisions Act, 1952 (EPF) — applicable to
+establishments with 20 or more employees.
+• Employees' State Insurance Act, 1948 (ESI) — applicable to establishments with 10 or more
+employees (in most states), providing medical and cash benefits.
+• Payment of Gratuity Act, 1972 — applicable to establishments with 10 or more employees;
+gratuity payable after 5 years of continuous service.
+• Payment of Bonus Act, 1965 — applicable to establishments with 20 or more employees,
+mandating minimum bonus payment.
+• Shops and Establishments Act (state-specific) — governs working hours, holidays, and
+conditions of employment for commercial establishments.
+• Maternity Benefit Act, 1961 — provides paid maternity leave (26 weeks) to women
+employees in establishments with 10 or more employees.
+• Minimum Wages Act, 1948 — mandates payment of minimum wages as notified by
+respective state governments.
+2. EPF Registration and Contribution
+Establishments crossing the 20-employee threshold must register with the Employees' Provident
+Fund Organisation (EPFO) within the prescribed time.
+Both employer and employee contribute 12% of basic wages + dearness allowance towards the
+PF account (subject to applicable wage ceiling rules).
+3. ESI Registration and Contribution
+Applicable to employees earning up to INR 21,000 per month (as per current wage ceiling).
+Employer contributes 3.25% and employee contributes 0.75% of wages (rates subject to periodic
+revision) towards ESI.
+4. Shops and Establishments Act Registration
+Every commercial establishment must register under the respective State Shops and
+Establishments Act within 30 days of commencing operations.
+Governs matters such as working hours, weekly holidays, overtime wages, and conditions for
+termination of employment.
+
+[PAGE 2]
+Registration is typically done through the respective State Labour Department portal.
+5. Labour Codes (2020 Reforms)
+The Government of India has consolidated 29 central labour laws into four Labour Codes: Code
+on Wages, Industrial Relations Code, Code on Social Security, and Occupational Safety, Health
+and Working Conditions Code.
+Implementation dates vary by state as these codes are notified and rules are finalized.
+6. Penalties for Non-Compliance
+Non-registration or delayed PF/ESI contributions can attract penal damages, interest on delayed
+payment, and prosecution under respective Acts.
+Non-compliance with Shops and Establishments Act provisions can result in fines as prescribed
+by respective state rules.

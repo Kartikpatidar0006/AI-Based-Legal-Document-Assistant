@@ -1,0 +1,40 @@
+
+[PAGE 1]
+SAMPLE TEST CONTRACT 1 — Service Agreement
+(Balanced/Fair Baseline)
+TESTING NOTE (remove before feeding to system): This is a baseline/control document with fair, balanced clauses.
+Expected system output: LOW overall risk score, no major red flags.
+This Service Agreement is made on 15th January 2026, by and between Bluepeak Technologies Pvt.
+Ltd., having its office at HSR Layout, Bengaluru ("Client"), and Nirmal Consulting Services, having its
+office at Koramangala, Bengaluru ("Service Provider").
+1. Scope of Services
+The Service Provider shall provide website development and maintenance services to the Client as
+detailed in Annexure A.
+2. Term
+This Agreement shall commence on 20th January 2026 and continue for 6 months, ending on 20th July
+2026.
+3. Payment Terms
+The Client shall pay the Service Provider a total fee of INR 3,00,000, payable in three equal instalments
+of INR 1,00,000 each, at the start, midpoint, and completion of the project. Payments shall be made
+within 15 days of invoice date.
+4. Confidentiality
+Both Parties agree to keep confidential any proprietary business information shared during the
+engagement and shall not disclose such information to third parties without prior written consent, both
+during and for 2 years after termination of this Agreement.
+5. Termination
+Either Party may terminate this Agreement by providing 30 days written notice to the other Party. In case
+of termination, the Client shall pay for all work completed up to the date of termination on a pro-rata
+basis.
+6. Intellectual Property
+Upon full and final payment, all intellectual property rights in the deliverables shall transfer to the Client.
+The Service Provider retains the right to showcase the work in its portfolio unless otherwise agreed.
+7. Limitation of Liability
+Neither Party's liability under this Agreement shall exceed the total fees paid under this Agreement,
+except in cases of gross negligence or wilful misconduct.
+8. Dispute Resolution
+Any disputes shall first be resolved through mutual discussion. If unresolved within 30 days, the matter
+shall be referred to arbitration in Bengaluru under the Arbitration and Conciliation Act, 1996.
+9. Governing Law
+
+[PAGE 2]
+This Agreement shall be governed by the laws of India, with courts at Bengaluru having jurisdiction.

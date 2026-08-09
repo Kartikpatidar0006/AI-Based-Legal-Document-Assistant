@@ -1,0 +1,26 @@
+
+[PAGE 1]
+SAMPLE TEST CONTRACT 3 — Rental Agreement (Missing
+Important Clauses)
+TESTING NOTE (remove before feeding to system): This document intentionally OMITS several clauses a standard
+rental agreement should have, for testing missing-clause detection: no termination/notice-period clause, no clause
+on security deposit refund conditions or deduction terms, no inspection rights clause, no dispute
+resolution/governing law clause, no clause on subletting restrictions, no stamp duty/registration mention. Expected
+system output: Should flag these as MISSING when compared against the standard Rental Agreement template
+(04_Rental_Agreement_Template.pdf).
+This Rental Agreement is made on 10th March 2026, by and between Rajesh Kulkarni, residing at
+Kothrud, Pune ("Landlord"), and Ankit Sharma, residing at Kothrud, Pune ("Tenant").
+1. Property Description
+The Landlord agrees to rent out the 2BHK flat located at Flat No. 402, Green Meadows Society, Kothrud,
+Pune, to the Tenant.
+2. Term of Tenancy
+This Agreement shall be valid for 11 months, commencing from 15th March 2026.
+3. Rent
+The Tenant shall pay a monthly rent of INR 18,000, payable in advance on or before the 5th of each
+month.
+4. Security Deposit
+The Tenant shall pay a security deposit of INR 1,00,000 at the time of signing this Agreement.
+5. Use of Premises
+The Tenant shall use the Premises solely for residential purposes.
+6. Maintenance
+The Tenant shall be responsible for electricity and water charges.

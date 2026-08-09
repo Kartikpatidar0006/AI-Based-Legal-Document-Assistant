@@ -1,0 +1,1348 @@
+
+[PAGE 1]
+PROJECT KICKSTART
+
+SERVICE AGREEMENT
+
+JSA TEMPLATE1
+
+J. Sagar Associates I advocates & solicitors
+
+Ahmedabad  |  Bengaluru  |  Chennai  |  Gurugram  |  Hyderabad  |  Mumbai  |  New Delhi
+
+1 This is a template. You are requested to consult a JSA attorney for any transaction specific
+legal and practical advice on this document.
+
+[PAGE 2]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+2
+
+SERVICES AGREEMENT
+
+BETWEEN
+
+[INSERT COMPANY NAME]
+
+AND
+
+[INSERT COMPANY NAME]
+
+DATED (E.g. January 1, 2018)
+
+[PAGE 3]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+3
+
+CONTENTS
+
+1.
+DEFINITIONS AND INTERPRETATION ................................................ 5
+2.
+APPOINTMENT OF SERVICE PROVIDER AND SCOPE OF
+SERVICES ................................................................................................... 8
+3.
+CONSIDERATION ................................................................................... 11
+4.
+OWNERSHIP AND INTELLECTUAL PROPERTY RIGHTS .............. 12
+5.
+PERSONNEL ............................................................................................. 13
+6.
+CONSULTANTS ....................................................................................... 14
+7.
+REPRESENTATIONS AND WARRANTIES .......................................... 15
+8.
+INDEMNIFICATION ............................................................................... 16
+9.
+TERM AND TERMINATION .................................................................. 17
+10.
+NON-COMPETE ....................................................................................... 18
+11.
+NON-SOLICITATION .............................................................................. 18
+12.
+ANNOUNCEMENTS ................................................................................ 19
+13.
+CONFIDENTIALITY ............................................................................... 19
+14.
+COSTS AND EXPENSES.......................................................................... 21
+15.
+NOTICES ................................................................................................... 21
+16.
+ENTIRE AGREEMENT ........................................................................... 23
+17.
+ASSIGNMENT .......................................................................................... 23
+18.
+FURTHER ASSURANCES ....................................................................... 23
+19.
+AMENDMENTS AND WAIVERS............................................................ 24
+20.
+SEVERABILITY ....................................................................................... 24
+21.
+COUNTERPARTS .................................................................................... 25
+22.
+RIGHTS OF THIRD PARTIES ................................................................ 25
+23.
+SURVIVABILITY ..................................................................................... 25
+24.
+CUMULATIVE RIGHTS AND SPECIFIC PERFORMANCE............... 26
+25.
+NO AGENCY OR PARTNERSHIP .......................................................... 26
+26.
+GOVERNING LAW, JURISDICTION AND DISPUTE
+RESOLUTION .......................................................................................... 27
+SCHEDULE I ......................................................................................................... 30
+
+[PAGE 4]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+4
+
+SERVICES AGREEMENT
+
+This Services Agreement (“Agreement”) executed at [insert place] as on this [insert date] by and
+between:
+
+[insert full name of the company], an Indian company incorporated under the provisions of the
+[Companies Act, 1956]/ [Companies Act, 2013] and having its registered office at [insert registered
+address of the company]  (hereinafter referred to as the “Service Provider”, which expression shall,
+unless repugnant to the context or meaning thereof, be deemed include its successors and permitted
+assigns);
+
+AND
+
+[insert full name of the company], an Indian company incorporated under the provisions of the
+[Companies Act, 1956]/ [Companies Act, 2013] and having its registered office at [insert registered
+address of the company]  (hereinafter referred to as the “Customer”, which expression shall, unless
+repugnant to the context or meaning thereof, be deemed include its successors and permitted assigns).
+
+The Service Provider and Customer shall, wherever the context may warrant, be individually referred
+to as a “Party” and collectively as the “Parties”.2
+
+WHEREAS
+
+A.
+Customer is engaged in the business of [insert details of business] (“Business”);3
+
+2 In the event that the Parties are natural person/ partnerships/ proprietorship concern, necessary
+changes should be made.
+3 It is important that the nature of business is clearly delineated. Restrictions and obligations in the
+Agreement associated with business, such as non-compete provisions, rely on this clarity.
+
+[PAGE 5]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+5
+
+B.
+Service Provider is engaged in the business of [insert details of business];
+
+C.
+Customer wishes to procure certain services listed in SCHEDULE I (hereinafter called
+“Services”)4 from Service Provider, and Service Provider agrees to supply the Services to
+Customer, subject to the terms and conditions of this Agreement.
+
+NOW THEREFORE, in consideration of the mutual promises and agreements set forth in this
+Agreement, the sufficiency of which is hereby acknowledged the Service Provider and Customer agree
+as follows:
+
+1.
+DEFINITIONS AND INTERPRETATION
+
+1.1
+In this Agreement, (including the recitals above and the Schedules hereto), except where the
+context otherwise requires, the following words and expressions will mean the following:
+
+“Applicable Law” means all statutes, rules, regulations, bye-laws, orders, ordinances,
+notifications, of any Governmental Authority or any person acting under the authority of any
+Governmental Authority or of any statutory authority, whether in effect on the date of this
+Agreement or thereafter.
+
+“Background IPR” means any Intellectual Property Rights discovered or created by Service
+Provider incidental to but not directly related to the Deliverables; any data used to generate the
+Deliverables under this Agreement; any pre-existing or other proprietary methodologies used
+for provision of Services or any works of authorship that have not been created specifically for
+Customer, or pre-existing, underlying or commonly used computer programs, methodologies,
+software, architecture, designs, tools, specifications, drawings, samples, records, code,
+processes and/or other development tools or other work products and any Intellectual Property
+Rights thereto, which have been originated, developed, acquired or purchased by Service
+Provider, not specific to the Deliverables provided.
+
+4 This forms a crucial part of the Agreement. There should be absolute clarity on what is included in
+the scope of ‘Services’. You may be as detailed as possible while describing ‘Services’ in the Schedule.
+
+[PAGE 6]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+6
+
+“Business” has the meaning given in Recital A.
+
+“Business Day” means any day of the week (excluding Saturdays, Sundays and public
+holidays) on which commercial banks are open for business in [insert the relevant places].
+
+“Confidential Information” has the meaning given in Clause 13.1.
+
+“Consultants” has the meaning given in Clause 6.1.
+
+“Deliverables” means all deliverables to be provided by Service Provider to Customer pursuant
+to Services provided under this Agreement.
+
+“Disclosing Party” has the meaning given in Clause 13.1(d).
+
+“Effective Date” means the date of execution of this Agreement.5
+
+“Fees” has the meaning given in Clause 3.1.
+
+“Government Approval” means any license, consent, permit, establishment registration,
+approval, or authorization of any person or any notice to any person, the granting of which is
+required under Applicable Law for the consummation of the transaction contemplated by this
+Agreement.
+
+“Governmental Authority” means any: (a) federal or central, state, local or municipal
+authority; (b) governmental or quasi-governmental authority; (c) individual, entity or body
+exercising any executive, legislative, judicial, administrative, regulatory, police, military or
+taxing authority.
+“Indemnified Persons” has the meaning given in Clause 8.1.
+
+“Intellectual Property Rights” means any patents (including any registration, extension, re-
+examination, re-issue, continuation, or renewal thereof), copyrights (including any registration
+
+5  This may even be a later date when the Services commence.
+
+[PAGE 7]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+7
+
+or renewal thereof), trade secrets, design registrations, trademarks (including any registrations
+and the goodwill associated therewith), service marks, trade names, trade dress, business
+names, domain names, source code, object code, test results, know-how, ideas, or foreign
+equivalents of the foregoing, and any other proprietary rights of any nature.
+
+“Losses” has the meaning given in Clause 8.1.
+
+“Notice” has the meaning given in Clause 15.1.
+
+“Personnel” has the meaning given in Clause 5.1.
+
+“Receiving Party” has the meaning given in Clause 13.1.
+
+“Services” has the meaning given in Recital C.
+
+“Term” has the meaning given in Clause 9.1.
+
+1.2
+In this Agreement:
+
+(a)
+References to a statute or statutory provision or order or regulation includes that statute,
+provision, order or regulation as amended, modified, re-enacted or replaced from time
+to time.
+
+(b)
+Headings to Clauses are for information only and will not form part of the operative
+provisions of this Agreement and will not be taken into consideration in its
+interpretation or construction.
+
+(c)
+References to Recitals, Clauses or Schedules are to recitals and clauses of or schedules
+to this Agreement and references to paragraphs are to paragraphs of the relevant
+Schedule.
+
+(d)
+Schedules form part of this Agreement and have effect as if set out in full in the body
+
+[PAGE 8]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+8
+
+of this Agreement. Any reference to this Agreement includes the Schedules.6
+
+(e)
+Reference to one gender includes a reference to the other and words importing the
+singular include the plural and vice versa.
+
+(f)
+A person includes a natural person, corporate or unincorporated body (whether or not
+having separate legal personality).
+
+(g)
+References to the words “include(s)” or “including” or “amongst others” will be
+construed as being followed by “without limitation”.
+
+2.
+APPOINTMENT OF SERVICE PROVIDER AND SCOPE OF SERVICES7
+
+2.1
+Appointment. Customer hereby appoints Service Provider as a [non-exclusive]8 service
+provider to provide Services in the manner as stipulated herein in this Agreement.
+
+2.2
+Service Levels. All Services shall be performed by Service Provider promptly and diligently
+at a level of proficiency expected of a service provider with the background and experience that
+
+6The purpose of this clause is to expressly incorporate the wording of the Schedules into the body of the
+Agreement, thereby ensuring that they are given contractual effect. The Schedules are intended to be
+treated as part of the Agreement, rather than merely being ancillary to it.
+7Depending on the nature and duration of Services, the Parties may choose to either rely solely on this
+Agreement for the entire services, or choose to have in place a system of Statements of Work (SoW)
+issued from time to time. SoWs are usually issued when there is recurring work required from Service
+Provider, with commercial aspects differing for each piece of work. This Agreement presently does not
+envisage a SoW based model. If the SoW model is to be followed, certain changes may need to be made
+to the language.
+8 A discussion on exclusivity is important. As a Service Provider, it may be commercial prudent to seek
+exclusivity, i.e. where Customer is not permitted to approach another service provider for the same or
+similar Services. For a Customer it may be preferable that the arrangement be kept non-exclusive. This
+gives the Customer the ability to approach third parties when the Services provided under this
+Agreement are not fully satisfactory, or where Customer has the need to appoint multiple service
+providers.
+
+[PAGE 9]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+9
+
+Service Provider has represented it has, and shall meet the quality standards set by Customer.9
+If performance of Services is not up to the required standard, Customer reserves the right to
+terminate this Agreement or adjust the Fees provided under Clause 3.1 below, forthwith upon
+notice to Service Provider. Customer shall provide such access to its information, property and
+personnel as may be reasonably required by Service Provider to perform Services.10
+
+2.3
+Place of Work. Service Provider may perform Services for Customer from any location,
+including any location designated by Service Provider.11
+
+2.4
+Acceptance of Deliverables. Service Provider shall provide all Deliverables to Customer as
+per agreed timelines. Each Deliverable shall be in a form in which it can be tested and evaluated
+by Customer. Unless a different time period is agreed to by the Parties in writing, Customer
+shall have a period of [insert number] [insert number in words] days12 to review and test
+each Deliverable for substantial conformity with the requirements of this Agreement. If a
+Deliverable does not substantially conform to agreed specifications in the reasonable opinion
+of Customer, Customer shall provide a written statement which identifies in reasonable detail
+
+9 Another way of drafting this provision would be that Service Provider will perform Services as per
+best industry practice. The term ‘best industry practice’ does not have a set definition. So the Clause,
+upon revision, becomes more general in nature, and, to this extent, slightly more favourable to Service
+Provider. A more Service Provider friendly provision would be that Service Provider will perform to
+the best of its abilities.
+10 Where the nature of services are complex or technical (for example, technology outsourcing services,
+server hosting services, payment processing services, etc.) Customers may choose to have a separate
+service level arrangement (SLA) that defines the level of service expected. This may include, among
+other things, down-times, efficiency levels and issue-redressal speeds. In such circumstances, SLAs are
+annexed to the main agreement. Service credits/ incentives are provided for meeting service levels,
+while penalties may be imposed for not meeting them. We have not included these aspects in this
+Agreement.
+11In case the Services are to be performed on Customer premises, or in case the nature of Services is
+such that location is important, this Clause may be amended to give Customer the ability to choose
+location.
+12 Should ideally be not more than 30 days.
+
+[PAGE 10]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+10
+
+all deficiencies and other identified issues resulting in determination of substantial non-
+conformity.13
+
+2.5
+Compliance with Applicable Law. Service Provider shall obtain and maintain all
+Governmental Approvals as may be required by it to provide Services.14 Service Provider shall
+be responsible to Government authorities in the provision of Services, towards obtaining
+statutory registrations, co-ordination with Government authorities and compliance with
+Applicable Law.15
+
+2.6
+Change in Applicable Law. Service Provider shall promptly identify and notify Customer of
+any changes in Applicable Law that may relate to Service Provider’s performance of Services.
+The Parties shall work together to identify the impact of such changes on performance of
+Services. If such changes prevent Service Provider from performing its obligations under this
+Agreement, the Parties shall agree to implement a suitable workaround until such time as
+Service Provider can perform its obligations under this Agreement without such workaround.
+If such workaround results in an increase in the charges to Customer under this Agreement,
+then Customer shall have the right to terminate the affected portion of Service Provider’s
+obligations. Upon the implementation of such workaround, the Parties shall negotiate and
+implement an equitable adjustment to the applicable Fees.16
+
+13 This Clause may not be applicable in cases where Services provided cannot be tangibly tested or
+verified, i.e. where the Deliverable itself is in the form of continuously provided services. This may
+apply to specific service projects that are undertaken.
+14A similar obligation for compliance with applicable laws may be placed on Customer, if requested by
+Service Provider.
+15 If you would like to impose more obligations on Service Provider, Service Provider may be asked to
+provide Customer with the list of documents needed to obtain such registrations or to make any filings
+with Government authorities. Service Provider may be asked to assist Customer in collating all
+requisite information and making all applications on a timely basis to Government authorities. Service
+Provider may also be asked to follow up with the Government authorities and obtain necessary
+registrations.
+16This provision would be relevant where Services fall under a strictly regulated space in India, or an
+emerging space where one can expect a change in law. Where Services provided are in the nature of
+general consultancy services, this does not assume as much significance.
+
+[PAGE 11]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+11
+
+2.7
+Delays. Service Provider shall identify and resolve any problems related to Services that may
+impede or delay timely rendering of Services. Where Service Provider has not performed or
+may not be able to perform its responsibilities with regard to the Services or meet any prescribed
+timelines mutually agreed between the Parties in relation to the Services, Service Provider shall
+promptly disclose such information to Customer and identify for Customer’s consideration and
+approval, specific measures to address such delay and mitigate the risks associated therewith.
+Customer shall not be obligated to agree to any extension of time unless Service Provider can
+demonstrate to Customer’s satisfaction that Service Provider has used every reasonable effort
+to meet the prescribed timelines. Any agreement to an extension of time under this paragraph
+shall not constitute a waiver or release of any rights that Customer may have under this
+Agreement.
+
+2.8
+Single Point of Contact. For proper coordination between Parties, the work assignment to
+and coor dinat ion wit h Service Provider will be done by a single representative
+nominated by Customer. This representative will coordinate with Customer and will be the first
+escalation point for both sides to resolve any issues related to engagement, execution, delivery,
+scheduling as well as the relationship as a whole.17
+
+3.
+CONSIDERATION
+
+3.1
+Rates for Services. Customer agrees to pay Service Provider for the Services performed at the
+rates set forth below (“Fees”).
+
+[fee structure to be included]18
+
+3.2
+Invoices. Service Provider shall provide Customer an invoice for Fees due as per with the
+payment schedule agreed by the Parties.19 Payment of any invoice is due within [insert
+
+17This is usually a practical necessity in order to avoid multiple channels of communication. You may
+consider if this is required in your case.
+18The Fee structure needs to be determined by the Parties. Some examples include: (a) One-time
+payment on completion of Services; (b) retainer arrangement on a periodic basis; (c) one-time set-up
+fee, followed by periodic payments; and (d) SoW-linked payments. Depending on what works for the
+Parties, appropriate details need to be inserted.
+19This may be clarified in the immediately preceding Clause, or by way of a schedule.
+
+[PAGE 12]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+12
+
+number] [insert number in words] days20 of receipt of such invoice by Customer. If Customer
+objects to any invoice, it shall, within [insert number] [insert number in words] days21 of
+receipt of such invoice, send a written notice to Service Provider specifying the reason for such
+objection and shall pay the undisputed portion of such invoice. The Parties will negotiate in
+good faith to resolve promptly any invoice that is disputed. Any invoice dispute that cannot be
+resolved by the Parties will be resolved in accordance with Clause 26 (Governing Law,
+Jurisdiction and Dispute Resolution).
+
+3.3
+Billing Records. Service Provider shall, at all times, maintain accurate billing records and
+invoices of the expenses incurred, if any, for providing Services which shall be provided
+to Customer as supporting document along with the invoice raised.
+
+3.4
+Taxes and Withholding. Service Provider shall be responsible for paying taxes in the nature
+of transactional taxes applicable for this Agreement. Transaction taxes shall include, without
+limitation, sales tax, excise tax, value added tax, goods and services tax and similar taxes. Each
+Party shall be responsible for applicable taxes imposed on its income, assets or capital.
+
+4.
+OWNERSHIP AND INTELLECTUAL PROPERTY RIGHTS22
+
+4.1
+Ownership. As between the Parties, Customer shall solely and exclusively own all right, title
+and ownership interest in and to the Deliverables and Intellectual Property Rights over such
+Deliverables and/ or shall hold appropriate licenses over the same from its affiliates. At no time
+during or after the term of this Agreement, shall Service Provider challenge or assist any third
+party to challenge Customer’s Intellectual Property Rights associated with the Deliverables.
+
+20This would depend on the credit period provided by Service Provider.
+21This may be commercially evaluated. 10 days could be suggested here, as an example.
+22The ownership of intellectual property rights (IPR) over Deliverables is important where the nature
+of Services provided involves the use or development of IPR. Typically, rights over Deliverables
+(commissioned by Customer) would belong to Customer, while any IPR already owned by Service
+Provider prior to undertaking Services, or any IPR developed unrelated to the Deliverables, would
+belong to Service Provider. We have included this concept here. In certain cases, due to the nature of
+services and the relationship between parties, Service Provider may retain all IPR over Deliverables,
+which will then be licensed to Customer. If that be the case, this Clause may need to be suitably
+amended. Again, this Clause does not assume a critical nature where the Services do not involve
+development or transfer of IPR. An example would be general consultancy services.
+
+[PAGE 13]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+13
+
+4.2
+Background IPR. Service Provider shall identify in writing all Background IPR that Service
+Provider plans to incorporate into or integrate with the Deliverables.23
+
+4.3
+Background IPR License. Service Provider hereby grants to Customer a non-exclusive,
+perpetual, irrevocable, royalty-free, sub-licensable, worldwide right to use, display, perform
+and reproduce Background IPR in connection with Customer’s use, operation, modification,
+enhancement and maintenance of the Deliverables.24 Additionally, Customer may transfer its
+license to, or may sublicense, Background IPR to the extent that such Background IPR are
+incorporated into a Deliverable, if Customer transfers or sublicenses such Deliverable.25
+
+4.4
+Assignment. To the extent that any Intellectual Property Right is created in favour of Service
+Provider or the Consultants under Applicable Law, Service Provider shall, and shall ensure that
+the Consultants shall irrevocably assign and agree to assign to Customer all right, title and
+interest, worldwide in and to the Deliverables. Service Provider shall not, and shall ensure that
+the Consultants do not challenge the validity of Customer’s ownership in the Deliverables.
+Service Provider agrees to execute any other document reasonably necessary to carry out the
+purpose of this Agreement.
+
+5.
+PERSONNEL26
+
+5.1
+Service Provider shall be or deemed to be the sole employer of all persons appointed by it,
+including all Consultants (“Personnel”) to perform Services for Customer, under this
+
+23The language here favours Customer. An alternate provision favouring Service Provider would be
+that Service Provider owns all Background IPR to the exclusion of Customer.
+24Again, this is Customer friendly. To make it Service Provider friendly, the license may be made
+revocable and non-transferable, with some scope for royalty.
+25Again, this provision may be deleted in order to make the clause Service Provider friendly.
+26Service Provider may use its employees or consultants to perform Services for Customer. It is
+important that the employment status of these personnel be clarified upfront. Typically, Service
+Provider will be considered the employer on record of all personnel it engages to perform Services. All
+registration and payment obligations, including payment of salary and emoluments for the personnel
+would fall within Service Provider’s responsibility. If this position is not clarified upfront, it is quite
+possible that the personnel, especially personnel working on Customer premises, utilising Customer
+infrastructure and facilities, may be in a positon to claim employment benefits from Customer.
+
+[PAGE 14]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+14
+
+Agreement. Customer reserves the right to request Service Provider to remove any of the
+Personnel, on written notice of [insert number] [insert number in words] days27, specifying
+reasons related to performance. Service Provider shall replace any such Personnel, so requested
+to be removed, with an employee of equivalent experience as agreed to by Customer. It is
+hereby clarified that the removal of any Personnel under this Clause does not affect his/her
+employment status with Service Provider, which shall be determined in the sole discretion of
+Service Provider, in accordance with its employment policies.28
+
+5.2
+Service Provider shall be responsible for complying in all respects with the provisions of all
+statutes, rules and regulations of the Government and other relevant statutory bodies under
+various Acts in respect of the Personnel, including but not limited to the Minimum Wages Act,
+1948, Employees State Insurance Act, 1948, Employees Provident Fund & Miscellaneous
+Provisions Act, 1952, Payment of Bonus Act, 1965, Contract Labour (Regulation & Abolition)
+Act, 1970 and Payment of Gratuity Act, 1972 and Customer will not be liable in this respect in
+any manner whatsoever, except to the extent such laws are applicable to Customer in its
+capacity as a principal employer.
+
+6.
+CONSULTANTS29
+
+6.1
+Customer acknowledges that Service Provider would, for the purpose of performing the
+Services under this Agreement, utilize the services of contract labour, independent contractors
+or consultants (“Consultants”). However, Service Provider acknowledges, agrees and
+covenants that it shall assume full responsibility in connection with the Consultants and work
+undertaken by the Consultants and no responsibility, costs or liability for whatsoever reason in
+this regard will fall on Customer or its affiliates or subsidiaries. The Consultants should have
+requisite skills needed to perform the tasks assigned to them. Any act undertaken by a
+
+27Typically 30 days.
+28In some cases, customers may require that personnel engaged by service providers undergo training
+with customer for a particular period. If customer is unhappy with particular workers, they have the
+opportunity to ask service provider to replace them.
+29This Clause may not be applicable in case Service Provider only utilises its own employees perform
+Services. In certain cases, Service Provider’s work may be outsourced to third party contractors /
+consultants.
+
+[PAGE 15]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+15
+
+Consultant shall be considered to be an act of Service Provider for the purpose of this
+Agreement.30
+
+7.
+REPRESENTATIONS AND WARRANTIES
+
+7.1
+Each Party hereby represents and warrants to the other Party as follows:
+
+(a)
+Manner of Performance. It shall perform its obligations under this Agreement and
+shall at all times comply with all Applicable Law including any central or state law,
+rules or regulations made there under.
+
+(b)
+Organization and Standing. It is duly organized and validly constituted and existing
+under the Applicable Law in India and has full power and authority (corporate or
+otherwise) and has all material Government Approvals necessary to own its assets and
+properties and to carry on its business as now conducted.
+
+(c)
+Authority and Enforceability. It has all necessary power, authority and approvals to
+execute and deliver this Agreement and to perform all its obligations arising or created
+hereunder.
+
+(d)
+No Contractual Restrictions. It is under no contractual or other restrictions or
+obligations that are inconsistent with the execution of this Agreement that will interfere
+with the performance of obligations under this Agreement.
+
+7.2
+Service Provider hereby represents and warrants that:
+
+(a)
+it shall, in performing its obligations under this Agreement, observe the highest
+professional standards of integrity and fair dealing; and
+
+(b)
+it shall comply with Applicable Law in connection with performance of Services.
+
+30This Clause is included to ensure that a breach by a Consultant would be considered a breach of
+Service Provider’s obligations under this Agreement.
+
+[PAGE 16]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+16
+
+7.3
+Each of the representations and warranties shall be construed as a separate representation,
+warranty, covenant or undertaking, as the case may be, and shall not be limited by the terms of
+any other representation or warranty or by any other term of this Agreement. Each of the
+representations and warranties shall be valid for the entire Term and till the continuance of this
+Agreement.
+
+7.4
+Each Party agrees that any breach of confidentiality by the other Party may cause irreparable
+damage to the affected Party for which recovery of money damages would be inadequate. Each
+Party in such situation would be entitled to seek equitable remedies including injunctive relief.
+
+7.5
+The Parties shall not represent themselves to be acting on behalf of the other Party, or use the
+other Party’s name or corporate logo of any Intellectual Property Rights in any manner
+whatsoever, or undertake any act, deed or thing on behalf of the other Party without obtaining
+the prior written approval of such Party.
+
+8.
+INDEMNIFICATION
+
+8.1
+Each Party agrees to indemnify, defend and hold the other Party and its directors, shareholders,
+and Affiliates (“Indemnified Persons”) harmless for damages, costs, claims, injuries, losses,
+or liabilities including reasonable attorneys’ fees (collectively referred to as “Losses”) incurred
+by such other Party, from any claims.
+
+(a) arising from the indemnifying Party’s material breach of any obligation, representation or
+warranty under this Agreement; or
+
+(b) relating to any physical damage to property, or personal injury or death, caused by the
+indemnifying Party or any of its affiliates, agents or subcontractors
+
+8.2
+In case of any litigation or other claim against the Indemnified Persons which triggers the
+indemnification obligations of Service Provider, Service Provider shall defend any such claim
+or action, consistent with the Indemnified Person’s right hereunder, negotiate its settlement or
+compromise, unless otherwise mutually agreed to in writing provided however that the
+Indemnified Persons may participate in such defence or settlement negotiations and pay its own
+costs associated therewith.
+
+8.3
+The Indemnified Persons shall have the right to take any action on behalf of itself, to settle,
+
+[PAGE 17]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+17
+
+adjust, defend or otherwise dispose of such claim, in which case Service Provider shall, upon
+being demanded by the Indemnified Persons, forthwith indemnify the entire amount to the
+Indemnified Persons. The Parties shall co-operate with each other and provide all assistance,
+information, documents etc. that may be required by the other Party to the settle the claims.
+
+8.4
+This Clause 8 shall survive the termination or expiry of this Agreement.
+
+9.
+TERM AND TERMINATION
+
+9.1
+Effective dates. This Agreement will commence on the Effective Date and continue in full
+force and effect for a period of [insert number] [insert number in words] year (the “Term”),
+unless terminated sooner in accordance with the provisions of this Agreement. Notwithstanding
+the provisions of this Clause 9.1, this Agreement shall continue in full force and effect as to
+any Services that are outstanding under this Agreement [or any statement of work executed
+pursuant to this Agreement] (if applicable) that is current as of the termination of this
+Agreement, until (a) such Services are completed; or (b) the Parties agree to terminate this
+Agreement as to such Services.
+
+9.2
+Termination for Cause. If Service Provider breaches a material provision of the Agreement,
+then Customer may terminate this Agreement if the breach remains un-remediated for [insert
+number] [insert number in words] days after Customer provides notice of the breach to
+Service Provider.
+
+9.3
+Termination for Convenience. The Parties may mutually terminate this Agreement by
+providing [insert number] [insert number in words] days’ written notice.
+
+9.4
+Delivery and Return upon Expiration or Termination. Upon termination of this Agreement,
+Service Provider shall:
+
+(a)
+within [insert number] [insert number in words]  days from date of termination,
+deliver the Deliverables to Customer, whether complete or incomplete; and
+
+(b)
+within [insert number] [insert number in words]  days from date of termination, return
+all Confidential Information belonging to Customer and / or destroy all copies of
+Confidential Information in its possession, as instructed by Service Provider.
+
+[PAGE 18]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+18
+
+9.5
+Consequences of Termination. The termination of this Agreement shall not:
+
+(a)
+In anyway affect or prejudice any right accrued to any Party against the other Party,
+prior to such termination.
+
+(b)
+Extinguish the rights and obligations of the Parties under this Agreement, which either
+expressly or by their nature survive the termination of this Agreement, unless any of such
+rights, obligations or liabilities are waived in writing. Further, all amounts, if any, then
+due and unpaid to a Party by the other Party under this Agreement, as well as other
+amounts, if any, accrued but not yet payable, shall forthwith become due and payable.
+
+10.
+NON-COMPETE31
+
+Neither Service Provider nor its promoters or directors shall, during the tenure of this
+Agreement, and for a period of [insert number] [insert number in words] years thereafter,
+directly or indirectly engage in, as an employee, associate, consultant, proprietor, partner,
+director or otherwise, or have any ownership interest in, or participate in any business which
+competes with Customer’s Business (or any of its affiliates or subsidiaries in India) or carry out
+any of the preceding for a competitor of Customer (or any of its affiliates or subsidiaries in
+India).
+
+11.
+NON-SOLICITATION32
+
+Neither Service Provider nor its promoters or directors shall, during the tenure of this
+Agreement, and for a period of [insert number] [insert number in words] years thereafter,
+either for itself or through, or on behalf of or in conjunction with any other person, persons,
+partnership, company, limited liability company, or other entity or association, solicit or employ
+any person who is employees with Customer, and shall not induce or attempt to induce any
+such persons to the leave their employment.
+
+31Service Provider may demand similar non-compete obligations from Customer.
+32Service Provider may demand similar non-solicitation obligations from Customer.
+
+[PAGE 19]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+19
+
+12.
+ANNOUNCEMENTS
+
+12.1
+Prior approval of announcements. Subject to Clause 12.2 below, no disclosure or
+announcement relating to the existence or subject matter of this Agreement will be made or
+issued by or on behalf of any Party without the prior written approval of the other Party.33
+
+12.2
+Permitted disclosures and announcements. Nothing in this Agreement prohibits a Party from
+(i) making such disclosure or announcement as is required by Applicable Law or the rules of
+any stock or securities exchange, or (ii) making or sending any announcement to a customer,
+supplier, business partner, agent or client informing about the Services contemplated under this
+Agreement in a format agreed to in writing by the Parties.
+
+13.
+CONFIDENTIALITY
+
+13.1
+Subject to Clause 13.2, each Party (“Receiving Party”) will treat as strictly confidential and
+not disclose to any person:
+
+(a)
+the existence, contents and subject matter of this Agreement except as provided in Clause
+12 (Announcements);
+
+(b)
+the negotiations relating to this Agreement;
+
+(c)
+information relating to the business of either Party; and
+
+(d)
+any information received by the Receiving Party from any other Party (“Disclosing
+Party”)
+
+(collectively, the “Confidential Information”).
+
+13.2
+Confidential Information will not be used or reproduced for any purpose or be disclosed to any
+
+33Not all contracting counterparties will want a prohibition on announcements. On the other hand,
+certain transactions require complete confidentiality. This needs to be evaluated on a case to case
+basis.
+
+[PAGE 20]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+20
+
+person other than (a) as specifically authorized in this Agreement or (b) to a Party’s directors,
+officers, employees and professional advisers on a need-to-know basis and by binding such
+recipients  to the same level of confidentiality as such Party. Each Party will take reasonable
+action to secure against theft, loss or unauthorized disclosure or use of Confidential Information
+in its possession.
+
+13.3
+Confidential Information does not include any information which (i) on the date of the receipt
+by the Receiving Party is in the public domain or is subsequently published or otherwise
+becomes part of the public domain through no fault of the Receiving Party; (ii) is already known
+and in the possession of the Receiving Party on the date of the disclosure as evidenced by
+written records; (iii) is independently developed by the Receiving Party without having access
+to the Confidential Information; or (iv) has been received by the Receiving Party after the date
+of the disclosure from a third party who did not receive such information under an obligation
+of confidentiality.
+
+13.4
+If a Party is required, by Applicable Law or the rules of any stock or securities exchange, to
+disclose any Confidential Information, then, (i) prior to making the disclosure, it will notify the
+other Party in writing of such requirement for disclosure except where it is not reasonably
+practicable in the circumstances. If the other Party raises objections to the intended disclosure,
+the Parties will engage in good faith negotiations to try to modify or alter the content or terms
+of said disclosure in order to limit the proposed disclosure as much as possible. If, for the
+reasons stated above, it is not possible for the Party to give prior notice, it must notify the other
+Party immediately after the disclosure has been made.
+
+13.5
+Each Party acknowledges that all their respective Confidential Information, whether or not
+formally marked or identified as confidential are their exclusive property and the respective
+Party will continue to retain ownership over their Confidential Information.
+
+13.6
+No Party will at any time seek to assert ownership of or any rights in any Confidential
+Information of the other Party.
+
+13.7
+Each Party acknowledges that any breach by it of the provisions of this Clause 13 would cause
+irreparable injury to the other Party for which they would have no adequate remedy under
+Applicable Law and for which damages would not constitute reasonable recompense; and,
+accordingly, it shall be open to the other Party to apply for and obtain injunctory/declaratory
+relief against the former in breach or allegedly in breach, and it shall submit to orders and
+
+[PAGE 21]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+21
+
+injunctions prayed and waive objections, if any, to such actions or proceedings or relief sought
+to the extent permitted by Applicable Law.
+
+14.
+COSTS AND EXPENSES
+14.1
+The [Service Provider/Customer]34 will bear the cost of stamp duty, registration fee and all
+other expenses incidental thereto.35
+14.2
+The Parties will bear their respective cost and expenses, including, legal, accounting, and other
+professional advisory fees incurred in connection with the preparation, execution and delivery
+of this Agreement.
+
+15.
+NOTICES
+
+15.1
+Any notice or other writing required or permitted to be given under this Agreement or for the
+purposes of this Agreement (“Notice”) to any Party will be in writing, in the English language,
+and will be either personally delivered or transmitted by:
+
+(i)  postage prepaid registered mail (air mail if international), with acknowledgment due;
+
+(ii)  internationally recognized courier;
+
+(iii)  email;36 or
+
+34The cost can be commercially agreed amongst the Parties. Attribution of taxes (direct and indirect),
+if any, should be preferably dealt with in a separate clause.
+35The obligation to pay stamp duty and registration charges may differ from case to case basis, as per
+the commercial understanding between the Parties. Commercial agreements in India are chargeable
+with stamp duty. Stamp duty rates vary depending on the State where the agreement is executed or
+brought into. Stamp duty needs to be paid on agreements prior to execution or (where a document is
+executed outside a State) within a prescribed number of days within which the agreement is brought
+into a particular State.
+36Issuing notices by e-mail has the inherent risk of such notices being intercepted, arriving late or not
+arriving at all. If the receipt is disputed, the client may have to prove receipt, which will involve
+inspections of hard disks and servers. It is important not to rely on automatic ‘read receipt’ software,
+as such receipts can be triggered by someone other than the intended recipient reading the e-mail or
+
+[PAGE 22]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+22
+
+(iv)  facsimile transmission.
+
+The address for service of each Party is as follows:
+
+(i)
+if to Service Provider,
+at
+
+:
+[insert details]
+Attention
+
+:
+[insert details]
+Fax No.
+
+:
+[insert details]
+Email
+
+:
+[insert details]
+
+(ii)
+if to Customer,
+at
+
+:
+[insert details]
+Attention
+
+:
+[insert details]
+Fax No.
+
+:
+[insert details]
+Email
+
+:
+[insert details]
+
+A Party may, by a written notice, designate another address for service of notices to it.
+
+15.2
+Such notice will be deemed to have been given:
+
+(i)
+[insert number] [insert number in words] 37 Business Days after posting, if
+transmitted by registered mail or air mail;
+
+(ii)
+the date of receipt, if delivered personally or by courier service;
+
+(iii)
+the date of receipt, if delivered by email; or
+
+(iv)
+the date of transmission with confirmed answer back, if transmitted by facsimile
+transmission,
+
+by virtue of a firewall. Therefore, the best course of action is to provide for multiple methods of
+confirmation of receipt- see Clause 15.2 below.
+
+37 Typically this would be 3 to 5 days.
+
+[PAGE 23]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+23
+
+whichever occurs first.
+
+16.
+ENTIRE AGREEMENT
+
+This Agreement and its attachments, including Schedules, constitute the entire agreement of
+the Parties with respect to the subject matter of this Agreement and supersede all prior
+agreements 38, understandings and representations, written and oral. If there is inconsistency
+between any provision of this Agreement and any of its attachments or schedule, the provisions
+of the Agreement will prevail.
+
+17.
+ASSIGNMENT
+
+This Agreement and the rights and obligations hereunder are binding upon and personal to the
+Parties and their respective successors and permitted assigns. A Party may not assign this
+Agreement or any of its rights, benefits or obligations under this Agreement to any other person
+without the prior written consent of the other Party.39
+
+18.
+FURTHER ASSURANCES40
+
+38 Consider whether there are any other documents not referred to in the Agreement which need to be
+included here. If so, consider specifically terminating such documents to ensure that there is no conflict
+going forward. Also consider whether certain portions of the prior documents are to continue – if so,
+such portions should be drafted in to this agreement. If there are any side letters/ transaction documents
+which are required to be kept completely confidential, it is pertinent to have such side letters signed
+post the Agreement and such side letter/ transaction documents should specifically refer to the main
+Agreement.
+39 Please ensure that the description of the Parties, specifically, the assignment, succession and
+nomination language is consistent with this assignment clause.
+40 This Clause is a statement of intent by the Parties’ that they will do such acts and sign all such
+documents which might not have been contemplated at the time of signing of the Agreement, but which
+later is found to be required, and which are not of such magnitude as to lead to frustration of the
+
+[PAGE 24]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+24
+
+The Parties will, with reasonable diligence, do all such things and provide all such reasonable
+assurances as may be required to consummate the transactions contemplated by this Agreement.
+Each Party will provide such further documents or instruments to the any other Party as may
+reasonably be required to effect the purpose of this Agreement and carry out its provisions.
+
+19.
+AMENDMENTS AND WAIVERS41
+
+19.1
+This Agreement may be amended only in writing duly executed by all of the Parties to this
+Agreement.
+
+19.2
+A Party may, in writing, waive any breach of any provision of this Agreement by another Party,
+and, unless otherwise stated in such written waiver, it will be limited to the specific breach
+waived. A waiver will not operate or be construed as a waiver of any continuing or succeeding
+breach of such provision or a waiver or modification of such provision or as a waiver in respect
+of any other or further failure whether of a like or different character.
+
+19.3
+No failure or delay by a Party to exercise any right, power,  privilege or remedy hereunder will
+be deemed a waiver of such Party’s rights, powers, privileges or remedies hereunder or will be
+deemed a waiver of such Party’s rights to subsequently exercise the same.
+
+20.
+SEVERABILITY
+
+If any provision of this Agreement is determined to be invalid, illegal or unenforceable in part,
+then such invalidity, illegality or unenforceability will attach only to such provision or part of
+such provision and this Agreement shall be interpreted and construed as if such terms and
+provisions had never been included herein. The remaining part of such provision and all other
+provisions of this Agreement will continue to remain in full force and effect. In such event, the
+Parties undertake to endeavour in good faith to replace the invalid, illegal or unenforceable
+
+Agreement itself. For example, if a particular customer / vendor of one of the parties requires a comfort
+letter or communication on the transaction, the further assurance clause can be invoked.
+
+41 The requirement for written consent for amendment is designed to exclude the possibility of informal
+and inadvertent oral amendments.
+
+[PAGE 25]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+25
+
+provision by a valid, legal and enforceable provision which contains, as nearly as possible, the
+rights and obligations contained in the provision to be replaced.
+
+21.
+COUNTERPARTS42
+
+This Agreement may be executed by the Parties in separate counterparts, each of which when
+so executed and delivered will be an original, but all such counterparts will together constitute
+one and the same instrument. The Parties may enter into this Agreement by signing any one or
+more of such originals or counterparts. An executed signature page of a counterpart scanned
+and sent by e-mail will be deemed delivery of an executed counterpart of this Agreement and,
+in such case, without prejudice to the validity of this Agreement, each Party will provide the
+other(s) with the original of such page as soon as reasonably practicable thereafter.
+
+22.
+RIGHTS OF THIRD PARTIES43
+
+Nothing expressed or implied in this Agreement is intended or will be construed to confer upon
+or give any person other than the Parties hereto, any rights or remedies under or by reason of
+this Agreement or any transaction contemplated by this Agreement.
+
+23.
+SURVIVABILITY44
+
+42This Clause is useful where the parties are executing separate copies of an agreement. Further, it
+must be remembered that a nominal stamp duty is payable on a counterpart, however, the stamp duty
+varies from State to State as per the applicable stamp duty provisions of the concerned State.
+43This Clause is intended to exclude any third party rights being created pursuant to this Agreement.
+The Clause merits importance as it explicitly negates the possibility of all third party rights, thus
+establishing the privity of contract only between the parties thereto.
+44This Clause is meant to ensure survival of certain provisions of the Agreement post termination such
+as dispute resolution, indemnity amongst others. Survival of these Clauses is important to ensure that
+even if the Agreement does not reach its intended conclusion, parties are in a position to recover and
+claim their rights that have arisen prior to execution of the Agreement, so as to restore the parties to
+the same position as they were in, before taking certain actions pursuant to the Agreement. Typically,
+clauses such as representations and warranties, indemnification, confidentiality, dispute resolution and
+notices are described in this clause as surviving termination.
+
+[PAGE 26]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+26
+
+The termination of this Agreement will in no event terminate or prejudice (a) any accrued right
+or obligation; or (b) the provisions of following Clauses:
+
+(a)
+Clause 1 (Definitions and Interpretation);
+(b)
+Clause 3.4 (Taxes and Withholding);
+(c)
+Clause 8 (Indemnification);
+(d)
+Clause 9.4 (Delivery and Return upon Expiration or Termination);
+(e)
+Clause 9.5 (Consequences of Termination);
+(f)
+Clause 10 (Non-Compete);
+(g)
+Clause 11 (Non-Solicitation);
+(h)
+Clause 13 (Confidentiality);
+(i)
+Clause 15 (Notices);
+(j)
+Clause 23 (Survivability);
+(k)
+Clause 24 (Cumulative Rights and Specific Performance);
+(l)
+Clause 26 (Governing Law, Jurisdiction and Dispute Resolution); and
+(m)
+[include any other relevant provisions].
+
+24.
+CUMULATIVE RIGHTS AND SPECIFIC PERFORMANCE
+
+24.1
+The rights, powers, privileges and remedies provided in this Agreement are cumulative and are
+not exclusive of any rights, powers, privileges or remedies provided by Applicable Law or
+otherwise. Nothing in this Agreement shall prevent a Party from enforcing its right by such
+remedies as may be available under Applicable Law.
+
+24.2
+Subject to Applicable Law, in the event of any breach or threatened breach by either Party of
+any covenant, obligation or other provision set forth in this Agreement, the other Party will be
+entitled, in addition to any other remedy that may be available to it, to seek (i) a decree or order
+of specific performance to enforce the observance and performance of such covenant,
+obligation or other provisions; and/ or (ii) an injunction restraining such breach or threatened
+breach.
+
+25.
+NO AGENCY OR PARTNERSHIP
+
+25.1
+This Agreement does not constitute a partnership or agency between the Parties or any of them.
+
+[PAGE 27]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+27
+
+26.
+GOVERNING LAW, JURISDICTION AND DISPUTE RESOLUTION
+
+26.1
+Governing Law and Jurisdiction
+
+The provisions of this Agreement shall be governed by, and construed in accordance with the
+laws of India. Subject to Clause 26.2 below, the courts at [insert name of city], India shall have
+the exclusive jurisdiction to settle any claim or matter arising under this Agreement.45
+
+26.2
+Dispute Resolution46
+
+(a)
+In the event that any dispute arises between the Parties in connection with this Lease
+Deed, the Parties will conduct negotiations in good faith to solve such dispute. If mutual
+resolution cannot be reached within [insert number] [insert number in words] days
+after the commencement of such negotiations, either Party will be free to refer such
+dispute to arbitral tribunal comprising of [insert number] [insert number in words]
+arbitrators wherein each Party shall be entitled to appoint an arbitrator and the two
+party-appointed arbitrators shall then appoint a third arbitrator47. The arbitration
+
+45The Parties can mutually decide a court at any place within India or where the registered office of the
+Service Provider/Customer is situated.
+46 Arbitration may be institutional or non-institutional.  Institutional arbitration is conducted under the
+auspices of an arbitral forum – some examples are: Singapore International Arbitration Centre (SIAC);
+London Court of International Arbitration (LCIA), Dubai International Arbitration Centre (DIAC),
+Swiss Arbitration Association (ASA), International Chamber of Commerce (ICC) etc. In such a case
+the rules of arbitration of the chosen institution would apply – and these would include the appointment
+of arbitrators and detailed conduct of the arbitration with the institution acting as the secretariat.
+Non-institutional arbitration is managed by the arbitrators appointed by the parties. The parties may
+choose to conduct the arbitration under the rules of an institution but not use the institution itself to
+conduct the arbitration or the parties may choose to follow default rules laid down by an arbitration
+law – for example the Indian Arbitration & Conciliation Act.
+This Clause provides for ad hoc arbitration between the Parties. Parties may consider arbitration by
+an institution (such as, LCIA, SIAC, ICC, etc.), in which case, the model arbitration clause suggested
+by such institution (with modifications if necessary) should be incorporated in this Agreement.
+47 Instead of referring the dispute between the Parties to a panel of three arbitrators, the parties have
+an option to refer the dispute arising out of this Lease Deed to a sole arbitrator to be mutually decided
+
+[PAGE 28]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+28
+
+proceedings shall be governed in accordance with the Arbitration and Conciliation Act,
+1996 and rules framed thereunder (“Rules”). The venue, place and seat of the arbitration
+shall be [insert name of place] and the language of the arbitration proceedings shall be
+English. The award rendered shall be in writing, and shall set out the reasons for the
+arbitral tribunal’s decision. The award shall allocate or apportion the costs of the
+arbitration as the arbitral tribunal deems fair. Any award made in such arbitration will
+be final and binding on the Parties. This Lease Deed, and the rights and obligations of
+the Parties shall remain in full force and effect pending the award in such arbitration
+proceeding, which award, if appropriate, shall determine whether and when, any
+termination shall become effective.
+
+(b)
+Judgment upon any arbitral award rendered may be entered in any court having
+jurisdiction, or application may be made to such court for a judicial acceptance of the
+award and an order of enforcement, as the case may be.
+
+[Signature page follows]
+
+by both the Parties. This should be decided keeping in mind the costs which are likely to be incurred in
+connection with an appointment of arbitrator are commensurate with the contract value.
+
+[PAGE 29]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+29
+
+IN WITNESS WHEREOF, the Service Provider and Customer have executed this Agreement in
+duplicate as of the day, month and year first above written.48
+
+Executed for and on behalf of [insert full name of the Service Provider]
+by:
+
+_____________________
+[insert name]
+[insert designation]
+insert place]
+
+Executed for and on behalf of [insert full name of the Customer]
+by:
+
+_____________________
+[insert name]
+[insert designation]
+insert place]
+
+48 Modify signature boxes as appropriate. Be careful when inserting signature boxes for individuals –
+the opening sentence should change to ‘EXECUTED by’.
+
+[PAGE 30]
+J. Sagar Associates
+Draft for discussions only | Privileged & Confidential
+Template Services Agreement
+February 2018
+
+30
+
+SCHEDULE I
+
+SCOPE OF SERVICES
+
+[To be inserted]

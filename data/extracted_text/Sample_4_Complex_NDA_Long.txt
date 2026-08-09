@@ -1,0 +1,75 @@
+
+[PAGE 1]
+SAMPLE TEST CONTRACT 4 — Detailed NDA (For
+Summarization Testing)
+TESTING NOTE (remove before feeding to system): This is a longer, more complex NDA with 10 detailed clauses,
+meant to test the SUMMARIZATION module. After running your summarizer, manually check whether the
+generated summary captures the key points: 3-year term, 5-year survival of confidentiality, 2-year non-use for
+competing products, injunctive relief remedy, and arbitration in Noida. Also useful for testing clause extraction (10
+distinct clauses to identify).
+This Non-Disclosure and Confidentiality Agreement ("Agreement") is entered into on 5th April 2026, by
+and between Vortexa Analytics Pvt. Ltd., having its registered office at Sector 62, Noida ("Disclosing
+Party"), and Meera Consulting Group, having its office at Sector 18, Noida ("Receiving Party"),
+collectively the "Parties", in connection with a potential data-analytics partnership (the "Purpose").
+1. Background
+WHEREAS the Disclosing Party possesses certain proprietary algorithms, datasets, business strategies,
+and technical documentation related to its analytics platform; AND WHEREAS the Receiving Party
+wishes to evaluate a potential collaboration involving access to certain aspects of this information; NOW
+THEREFORE, in consideration of the mutual covenants contained herein, the Parties agree as follows.
+2. Definition of Confidential Information
+"Confidential Information" shall include, without limitation: (a) all source code, algorithms, and technical
+architecture of the Disclosing Party's analytics platform; (b) customer lists, pricing models, and business
+strategies; (c) financial statements and projections shared for due diligence purposes; (d) any
+information marked "Confidential" or which a reasonable person would understand to be confidential
+given the nature of the information and circumstances of disclosure; and (e) the existence, terms, and
+status of discussions between the Parties regarding the Purpose.
+3. Obligations of Receiving Party
+The Receiving Party shall: (a) use the Confidential Information solely for evaluating the Purpose; (b)
+restrict access to Confidential Information to employees and advisors with a genuine need to know, who
+are themselves bound by confidentiality obligations at least as protective as those herein; (c) not
+reverse-engineer, decompile, or attempt to derive the source code or underlying methodology of any
+software or algorithms disclosed; (d) promptly notify the Disclosing Party in writing of any unauthorized
+use or disclosure of Confidential Information upon becoming aware of the same; and (e) not use the
+Confidential Information to develop competing products or services for a period of 2 years from the date
+of disclosure.
+4. Exclusions from Confidential Information
+This Agreement imposes no obligation with respect to Confidential Information that: (a) was already
+known to the Receiving Party without confidentiality restrictions prior to disclosure, as evidenced by
+written records; (b) becomes publicly available through no breach of this Agreement; (c) is independently
+developed by the Receiving Party without reference to or use of the Confidential Information; or (d) is
+required to be disclosed pursuant to applicable law, regulation, or valid court order, provided that the
+Receiving Party gives prompt written notice to the Disclosing Party (to the extent legally permitted) to
+allow it to seek a protective order.
+5. Term and Survival
+
+[PAGE 2]
+This Agreement shall remain in effect for 3 years from the date of execution. The confidentiality
+obligations set forth in Clause 3 shall survive termination or expiration of this Agreement for an additional
+period of 5 years, except with respect to trade secrets, which shall remain protected for as long as they
+retain trade secret status under applicable law.
+6. No Obligation to Proceed
+Nothing in this Agreement shall be construed as an obligation on either Party to proceed with any
+transaction, enter into any further agreement, or continue discussions regarding the Purpose. Either
+Party may terminate discussions at any time without liability, subject to the surviving obligations under
+this Agreement.
+7. Return or Destruction of Materials
+Upon written request of the Disclosing Party, or upon termination of discussions regarding the Purpose,
+the Receiving Party shall, within 15 business days, return or destroy all documents and materials
+containing Confidential Information, and certify such destruction in writing, save for one archival copy
+retained solely for legal compliance purposes.
+8. Remedies
+The Parties acknowledge that a breach of this Agreement may cause irreparable harm not adequately
+compensable by monetary damages alone, entitling the non-breaching Party to seek injunctive relief and
+specific performance, in addition to any other remedies available at law or in equity, without the
+requirement to post bond.
+9. Governing Law and Dispute Resolution
+This Agreement shall be governed by the laws of India. Any dispute arising out of or relating to this
+Agreement shall first be attempted to be resolved amicably within 30 days; failing which, the dispute
+shall be referred to arbitration under the Arbitration and Conciliation Act, 1996, seated at Noida,
+conducted by a sole arbitrator mutually appointed by the Parties, with proceedings conducted in English.
+10. Miscellaneous
+This Agreement constitutes the entire understanding between the Parties regarding its subject matter.
+No amendment shall be effective unless in writing and signed by both Parties. If any provision is held
+invalid or unenforceable, the remaining provisions shall continue in full force and effect. Neither Party
+may assign this Agreement without the prior written consent of the other Party, except in connection with
+a merger, acquisition, or sale of substantially all assets.

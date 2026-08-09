@@ -1,0 +1,47 @@
+
+[PAGE 1]
+GST REGISTRATION — COMPLIANCE OVERVIEW
+This document provides a general overview of Goods and Services Tax (GST) registration
+requirements for small businesses and startups in India. This is general informational content, not
+professional tax advice.
+1. What is GST
+Goods and Services Tax (GST) is an indirect tax levied on the supply of goods and services in
+India, implemented from July 1, 2017. It subsumed multiple earlier indirect taxes such as VAT,
+Service Tax, and Excise Duty into a single unified tax structure.
+2. Who Needs to Register
+Businesses with an annual aggregate turnover exceeding INR 40 lakh (INR 20 lakh for special
+category states) for goods, or INR 20 lakh (INR 10 lakh for special category states) for services,
+are required to register for GST.
+Businesses making inter-state supplies, e-commerce operators, and casual taxable persons must
+register regardless of turnover.
+Voluntary registration is also permitted for businesses below the threshold, which can help with
+input tax credit claims and building business credibility.
+3. Documents Required for GST Registration
+• PAN Card of the business/proprietor
+• Aadhaar Card of the proprietor/partners/directors
+• Proof of business registration (Partnership Deed, Certificate of Incorporation, etc.)
+• Address proof of the place of business (electricity bill, rent agreement, NOC from owner)
+• Bank account statement or cancelled cheque
+• Digital Signature Certificate (for companies and LLPs)
+• Passport-size photograph of the applicant
+4. Registration Process
+• Visit the GST portal (gst.gov.in) and complete Part A of Form GST REG-01 with PAN, mobile
+number, and email.
+• Upon OTP verification, a Temporary Reference Number (TRN) is generated.
+• Complete Part B of the form using the TRN, uploading required documents.
+• An Application Reference Number (ARN) is issued after submission.
+• The GST officer reviews the application; if approved, a GST Identification Number (GSTIN)
+is issued, typically within 7 working days.
+5. GST Return Filing
+
+[PAGE 2]
+Registered businesses must file periodic GST returns (monthly/quarterly depending on turnover
+and scheme), including GSTR-1 (outward supplies) and GSTR-3B (summary return with tax
+payment).
+Businesses under the Composition Scheme (turnover up to INR 1.5 crore for goods) file simplified
+quarterly returns at lower tax rates but cannot claim input tax credit.
+6. Penalties for Non-Compliance
+Failure to register when required attracts a penalty of 10% of the tax due (minimum INR 10,000),
+or 100% of tax due in cases of deliberate evasion.
+Late filing of returns attracts late fees per day of delay, subject to a maximum cap, along with
+interest on outstanding tax liability.

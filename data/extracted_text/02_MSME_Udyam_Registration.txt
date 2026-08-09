@@ -1,0 +1,46 @@
+
+[PAGE 1]
+MSME / UDYAM REGISTRATION — COMPLIANCE
+OVERVIEW
+This document provides a general overview of MSME (Udyam) registration for small businesses
+in India. This is general informational content, not professional advice.
+1. What is MSME/Udyam Registration
+Udyam Registration is the official government registration for Micro, Small, and Medium
+Enterprises (MSMEs) in India, introduced under the Ministry of MSME. It replaced the earlier
+Udyog Aadhaar system.
+2. Classification Criteria
+• Micro Enterprise: Investment up to INR 2.5 crore and annual turnover up to INR 10 crore
+• Small Enterprise: Investment up to INR 25 crore and annual turnover up to INR 100 crore
+• Medium Enterprise: Investment up to INR 125 crore and annual turnover up to INR 500 crore
+• Classification is based on a composite criterion of both investment in
+plant/machinery/equipment and annual turnover.
+3. Documents Required
+• Aadhaar Number of the proprietor/partner/director
+• PAN Card of the business
+• Bank account details
+• Business address proof
+• Details of business activity (NIC code)
+• Investment and turnover details (self-declared, verified through linked IT and GST records)
+4. Registration Process
+• Visit the Udyam Registration portal (udyamregistration.gov.in).
+• Enter Aadhaar number and validate with OTP.
+• Fill in PAN details, business details, and investment/turnover information.
+• Submit the application; registration is free of cost and typically instant upon successful
+validation.
+• A Udyam Registration Certificate with a unique Udyam Registration Number (URN) is
+issued.
+5. Benefits of Udyam Registration
+• Priority sector lending and easier access to collateral-free bank loans under schemes such
+as CGTMSE.
+
+[PAGE 2]
+• Protection against delayed payments from buyers under the MSME Development Act, 2006,
+including interest on delayed payments.
+• Subsidies on patent registration, industrial promotion, and ISO certification.
+• Eligibility for various government tenders reserved for MSMEs.
+• Lower interest rates on loans and easier access to credit.
+6. Points to Note
+Udyam registration is self-declared and does not require uploading documents at the time of
+registration; details are verified through PAN and GST linkage.
+Existing enterprises registered under Udyog Aadhaar were required to re-register under the
+Udyam system.
