@@ -1,11 +1,28 @@
 # AI-Based Legal Document Assistant Dependencies
+# Week 3 additions marked with [W3]
+# Week 4 additions marked with [W4]
+
+# Core LLM / RAG
+google-generativeai              # [W4] Gemini API SDK
 langchain
+langchain-text-splitters        # [W3] RecursiveCharacterTextSplitter
 llama-index
+
+# API / Backend
 fastapi
 uvicorn
-sentence-transformers
-chromadb
+
+# Embeddings & Vector DB
+sentence-transformers            # all-MiniLM-L6-v2 model
+chromadb                         # local persistent vector store
+
+# PDF Extraction
 pymupdf
 pytesseract
 pillow
+
+# Database
+psycopg2-binary                  # [W3] PostgreSQL adapter
+
+# Utilities
 python-dotenv
