@@ -55,9 +55,8 @@ from dotenv import load_dotenv
 VECTOR_DB_PATH: Path = Path("data/vector_db")
 COLLECTION_NAME: str = "legal_docs"
 EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"
-GEMINI_MODEL: str = "gemini-flash-latest"          # fast, free-tier-friendly
-
-DEFAULT_TOP_K: int = 5                           # chunks to retrieve per query
+GEMINI_MODEL: str = "gemini-3.5-flash"          # fast, highly capable reasoning model
+DEFAULT_TOP_K: int = 7                           # higher chunk retrieval depth for richer context
 
 # Legal disclaimer — must appear verbatim at the end of every answer
 LEGAL_DISCLAIMER: str = (
@@ -76,10 +75,10 @@ def load_api_key() -> str:
     Supports both GOOGLE_API_KEY and GEMINI_API_KEY variable names.
     Raises EnvironmentError with a helpful message if neither is found.
     """
-    load_dotenv()  # reads .env from current working directory
+    load_dotenv(override=True)  # reads .env and overrides any stale system env vars
 
-    # Support both naming conventions
-    api_key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+    # Support both naming conventions, prioritizing GEMINI_API_KEY from .env
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
     if not api_key:
         raise EnvironmentError(
@@ -89,6 +88,10 @@ def load_api_key() -> str:
             "  GEMINI_API_KEY=your_key_here\n"
             "Get a free key at: https://aistudio.google.com/app/apikey"
         )
+
+    # Sync OS environment variables so SDK consistently uses the newly loaded key
+    os.environ["GEMINI_API_KEY"] = api_key
+    os.environ["GOOGLE_API_KEY"] = api_key
     return api_key
 
 
@@ -232,7 +235,7 @@ def build_prompt(query: str, retrieved_chunks: list[dict]) -> str:
         source_label = f"[Source {i}: {chunk['filename']} | {chunk['category']} | similarity: {chunk['similarity']}]"
         context_lines.append(f"\n{source_label}")
         context_lines.append(chunk["text"])
-        context_lines.append("")  # blank line between chunks
+        context_lines.append("")  
 
     context_lines.append("─" * 60)
     context_block = "\n".join(context_lines)
@@ -277,21 +280,58 @@ def call_gemini(
     so the CLI doesn't crash mid-session.
     """
     from google import genai  # local import
+    from google.genai import types
 
-    for attempt in range(1, max_retries + 2):  # +2 so final attempt = max_retries+1
-        try:
-            response = gemini_client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt,
-            )
-            return response.text
+    candidate_models = [GEMINI_MODEL, "gemini-3.6-flash", "gemini-flash-latest"]
+    
+    for attempt in range(1, max_retries + 2):  
+        for model_name in candidate_models:
+            try:
+                response = gemini_client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        temperature=0.2,
+                    )
+                )
+                return response.text
+            except Exception as e:
+                error_str = str(e).lower()
+                if "404" in error_str or "not_found" in error_str or "not found" in error_str:
+                    continue  # try next model in candidate list
+                
+                # Rate limit — wait and retry
+                if "429" in error_str or "quota" in error_str or "rate" in error_str:
+                    wait_seconds = 15 * attempt 
+                    if attempt <= max_retries:
+                        print(
+                            f"\n⚠️  Gemini rate limit hit (attempt {attempt}/{max_retries + 1}). "
+                            f"Waiting {wait_seconds}s before retry..."
+                        )
+                        time.sleep(wait_seconds)
+                        break
+                    else:
+                        return (
+                            "❌ Gemini rate limit exceeded after retries. "
+                            "You are on the free tier — please wait 1 minute and try again."
+                        )
 
-        except Exception as e:
-            error_str = str(e).lower()
+                # Safety filter — content was blocked
+                if "block" in error_str or "safety" in error_str or "finish_reason" in error_str:
+                    return (
+                        "❌ Gemini blocked this response due to safety filters. "
+                        "Try rephrasing your question."
+                    )
+
+                # Any other error
+                return (
+                    f"❌ Gemini API error: {type(e).__name__}: {e}\n"
+                    "Please check your API key and internet connection."
+                )
 
             # Rate limit — wait and retry
             if "429" in error_str or "quota" in error_str or "rate" in error_str:
-                wait_seconds = 15 * attempt  # 15s, 30s, ...
+                wait_seconds = 15 * attempt 
                 if attempt <= max_retries:
                     print(
                         f"\n⚠️  Gemini rate limit hit (attempt {attempt}/{max_retries + 1}). "
@@ -348,8 +388,8 @@ def _get_clients() -> tuple:
         print("   Embedding model ready.")
 
     if _gemini_model is None:
-        api_key = load_api_key()  # reads .env
-        _gemini_model = init_gemini(api_key)  # returns a google.genai.Client
+        api_key = load_api_key()
+        _gemini_model = init_gemini(api_key)  
 
     return _collection, _embed_model, _gemini_model
 
