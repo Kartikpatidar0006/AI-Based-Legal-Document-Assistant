@@ -9,17 +9,26 @@ langchain-text-splitters        # [W3] RecursiveCharacterTextSplitter
 llama-index
 
 # API / Backend
-fastapi
-uvicorn
+fastapi                          # [W5] FastAPI web framework
+uvicorn[standard]                # [W5] ASGI server
+sqlalchemy                       # [W5] ORM (2.0 style mapped_column)
+psycopg2-binary                  # PostgreSQL adapter for SQLAlchemy
+python-multipart                 # [W5] Required for FastAPI file upload (UploadFile)
+python-jose[cryptography]        # [W5] JWT creation and verification
+passlib[bcrypt]                  # [W5] Password hashing (bcrypt)
+email-validator                  # [W5] Pydantic EmailStr validation
 
 # Embeddings & Vector DB
 sentence-transformers            # all-MiniLM-L6-v2 model
 chromadb                         # local persistent vector store
 
-# PDF Extraction
-pymupdf
-pytesseract
-pillow
+# PDF & Document Extraction
+pymupdf                          # PDF native text extraction
+python-docx                      # [W5+] DOCX / Word document extraction
+
+# OCR (image files + scanned PDFs)
+pytesseract                      # Python wrapper for Tesseract binary
+pillow                           # Image loading + preprocessing for OCR
 
 # Database
 psycopg2-binary                  # [W3] PostgreSQL adapter

@@ -55,7 +55,7 @@ from dotenv import load_dotenv
 VECTOR_DB_PATH: Path = Path("data/vector_db")
 COLLECTION_NAME: str = "legal_docs"
 EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"
-GEMINI_MODEL: str = "gemini-3.5-flash"          # fast, highly capable reasoning model
+GEMINI_MODEL: str = "gemini-3.6-flash"          # fast, highly capable reasoning model
 DEFAULT_TOP_K: int = 7                           # higher chunk retrieval depth for richer context
 
 # Legal disclaimer — must appear verbatim at the end of every answer
@@ -282,8 +282,9 @@ def call_gemini(
     from google import genai  # local import
     from google.genai import types
 
-    candidate_models = [GEMINI_MODEL, "gemini-3.6-flash", "gemini-flash-latest"]
+    candidate_models = [GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-flash-latest", "gemini-3.5-flash"]
     
+    last_error = None
     for attempt in range(1, max_retries + 2):  
         for model_name in candidate_models:
             try:
@@ -296,10 +297,21 @@ def call_gemini(
                 )
                 return response.text
             except Exception as e:
+                last_error = e
                 error_str = str(e).lower()
-                if "404" in error_str or "not_found" in error_str or "not found" in error_str:
-                    continue  # try next model in candidate list
                 
+                # If model is deprecated/not found (404) or server unavailable (503/500/high demand), try next model
+                if any(err in error_str for err in ["404", "not_found", "not found", "503", "unavailable", "500", "overloaded"]):
+                    continue
+                
+                # Invalid API key (400)
+                if "api_key_invalid" in error_str or "api key not valid" in error_str:
+                    return (
+                        "❌ Invalid Gemini API key!\n"
+                        "Please check your GEMINI_API_KEY in the .env file.\n"
+                        "Get a valid key at: https://aistudio.google.com/app/apikey"
+                    )
+
                 # Rate limit — wait and retry
                 if "429" in error_str or "quota" in error_str or "rate" in error_str:
                     wait_seconds = 15 * attempt 
@@ -329,36 +341,7 @@ def call_gemini(
                     "Please check your API key and internet connection."
                 )
 
-            # Rate limit — wait and retry
-            if "429" in error_str or "quota" in error_str or "rate" in error_str:
-                wait_seconds = 15 * attempt 
-                if attempt <= max_retries:
-                    print(
-                        f"\n⚠️  Gemini rate limit hit (attempt {attempt}/{max_retries + 1}). "
-                        f"Waiting {wait_seconds}s before retry..."
-                    )
-                    time.sleep(wait_seconds)
-                    continue
-                else:
-                    return (
-                        "❌ Gemini rate limit exceeded after retries. "
-                        "You are on the free tier — please wait 1 minute and try again."
-                    )
-
-            # Safety filter — content was blocked
-            if "block" in error_str or "safety" in error_str or "finish_reason" in error_str:
-                return (
-                    "❌ Gemini blocked this response due to safety filters. "
-                    "Try rephrasing your question."
-                )
-
-            # Any other error
-            return (
-                f"❌ Gemini API error: {type(e).__name__}: {e}\n"
-                "Please check your API key and internet connection."
-            )
-
-    return "❌ Gemini did not return a response."
+    return f"❌ Gemini did not return a response: {last_error}"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -389,9 +372,59 @@ def _get_clients() -> tuple:
 
     if _gemini_model is None:
         api_key = load_api_key()
-        _gemini_model = init_gemini(api_key)  
+        _gemini_model = init_gemini(api_key)
 
     return _collection, _embed_model, _gemini_model
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SHARED PUBLIC HELPERS — importable by document_processor.py
+# ─────────────────────────────────────────────────────────────────────────────
+
+def get_clients() -> tuple:
+    """
+    Public alias for _get_clients().
+    Import this from document_processor.py (or any future module) to reuse
+    the already-cached ChromaDB collection, embedding model, and Gemini client
+    without re-initialising them.
+
+    Returns:
+        (collection, embed_model, gemini_client)  — same tuple as _get_clients()
+    """
+    return _get_clients()
+
+
+def retrieve_chunks_for_query(
+    query: str,
+    top_k: int = DEFAULT_TOP_K,
+    category_filter: str | None = None,
+) -> list[dict]:
+    """
+    Convenience public function: embed a query string and retrieve top-K chunks.
+
+    This wraps embed_query() + retrieve_chunks() so that document_processor.py
+    can call a single function for RAG retrieval without managing the
+    embedding model or ChromaDB collection directly.
+
+    Args:
+        query           – Natural language query / topic string.
+        top_k           – Number of chunks to retrieve.
+        category_filter – Optional category filter (templates / compliance_docs /
+                          sample_contracts).
+
+    Returns:
+        List of chunk dicts with keys: text, filename, category, chunk_index, similarity.
+        Returns [] if ChromaDB is empty or unavailable.
+    """
+    try:
+        collection, embed_model, _ = _get_clients()
+        query_embedding = embed_query(query, embed_model)
+        return retrieve_chunks(query_embedding, collection, top_k=top_k,
+                               category_filter=category_filter)
+    except Exception as exc:
+        # Don't crash the caller — return empty list with a print so it's visible
+        print(f"  ⚠️  retrieve_chunks_for_query failed: {exc}")
+        return []
 
 
 def answer_query(
