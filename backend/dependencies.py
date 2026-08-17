@@ -7,8 +7,8 @@ FastAPI dependencies injected into route handlers via Depends():
     get_db()           → yields a SQLAlchemy Session, commits on success,
                          rolls back on exception, always closes.
 
-    get_current_user() → reads Authorization header, verifies JWT,
-                         returns the User ORM object.
+    get_current_user() → reads Authorization header via HTTPBearer,
+                         verifies JWT, returns the User ORM object.
                          Raises 401 if token is missing/invalid.
                          Raises 404 if the user_id in the token no longer exists.
 """
@@ -17,7 +17,7 @@ import uuid
 from typing import Generator
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
 from backend.auth import decode_access_token
@@ -46,23 +46,28 @@ def get_db() -> Generator[Session, None, None]:
 
 # ── Auth dependency ───────────────────────────────────────────────────────────
 
-# OAuth2PasswordBearer extracts the token from `Authorization: Bearer <token>`.
-# tokenUrl points to the login endpoint (used by Swagger UI's "Authorize" button).
-_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+# HTTPBearer extracts the raw token from `Authorization: Bearer <token>`.
+# Swagger UI's "Authorize" popup will simply ask for the token string,
+# avoiding the form-data username/password flow of OAuth2PasswordBearer.
+_http_bearer = HTTPBearer()
 
 
 def get_current_user(
-    token: str = Depends(_oauth2_scheme),
+    credentials: HTTPAuthorizationCredentials = Depends(_http_bearer),
     db: Session = Depends(get_db),
 ) -> User:
     """
     Validate the JWT and return the authenticated User ORM object.
 
+    The token is extracted from the `Authorization: Bearer <token>` header
+    by HTTPBearer.  In Swagger UI, click "Authorize" and paste the
+    access_token you received from POST /auth/login.
+
     Raises:
         HTTPException 401 — token missing, invalid, or expired
         HTTPException 404 — user_id from token no longer in database
     """
-    payload = decode_access_token(token)  # raises 401 on failure
+    payload = decode_access_token(credentials.credentials)  # raises 401 on failure
 
     user_id_str: str | None = payload.get("sub")
     if not user_id_str:
