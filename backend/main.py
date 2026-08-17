@@ -71,14 +71,11 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    # Allow the two most common React dev server ports
-    allow_origins=[
-        "http://localhost:3000",   # Create React App
-        "http://localhost:5173",   # Vite
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-    ],
-    allow_credentials=True,
+    # Local development: allow all origins so the React dev server
+    # (any port) can reach the API without preflight rejections.
+    # Restrict this to specific domains before deploying to production.
+    allow_origins=["*"],
+    allow_credentials=False,   # Must be False when allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )

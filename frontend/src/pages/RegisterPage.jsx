@@ -46,9 +46,9 @@ export default function RegisterPage() {
     <div className="auth-page">
       <div className="auth-card auth-card--wide">
         <div className="auth-card__brand">
-          <span className="auth-card__logo" aria-hidden="true">⚖</span>
+          <div className="auth-card__logo" aria-hidden="true">⚖</div>
           <h1 className="auth-card__title">LegalEase AI</h1>
-          <p className="auth-card__subtitle">Create your account</p>
+          <p className="auth-card__subtitle">Create your account to get started</p>
         </div>
 
         <form id="register-form" className="auth-form" onSubmit={handleSubmit} noValidate>

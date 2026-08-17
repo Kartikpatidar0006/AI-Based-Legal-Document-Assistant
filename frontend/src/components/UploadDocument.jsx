@@ -184,13 +184,17 @@ export default function UploadDocument({ onClose, onComplete }) {
               />
               {file ? (
                 <>
-                  <span className="dropzone__file-icon">📄</span>
+                  <div className="dropzone__icon-wrap">
+                    <span className="dropzone__file-icon">📄</span>
+                  </div>
                   <p className="dropzone__filename">{file.name}</p>
                   <p className="dropzone__hint">Click to change file</p>
                 </>
               ) : (
                 <>
-                  <span className="dropzone__icon" aria-hidden="true">⬆</span>
+                  <div className="dropzone__icon-wrap">
+                    <span className="dropzone__icon" aria-hidden="true">⬆</span>
+                  </div>
                   <p className="dropzone__prompt">Drop your file here or <span className="dropzone__browse">browse</span></p>
                   <p className="dropzone__hint">PDF, DOCX, JPG, PNG, TIFF, BMP</p>
                 </>

@@ -91,7 +91,7 @@ export default function DashboardPage() {
 
       {!loading && !error && documents.length === 0 && (
         <div className="empty-state">
-          <span className="empty-state__icon" aria-hidden="true">📋</span>
+          <div className="empty-state__icon" aria-hidden="true">📋</div>
           <h2 className="empty-state__heading">No documents yet</h2>
           <p className="empty-state__text">
             Upload your first contract or legal document to get an AI-powered
@@ -122,7 +122,7 @@ export default function DashboardPage() {
               {documents.map((doc) => (
                 <tr
                   key={doc.id}
-                  className="doc-table__row"
+                  className={`doc-table__row${doc.status === 'analyzed' ? ' doc-table__row--analyzed' : ''}`}
                   onClick={() => navigate(`/documents/${doc.id}`)}
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && navigate(`/documents/${doc.id}`)}

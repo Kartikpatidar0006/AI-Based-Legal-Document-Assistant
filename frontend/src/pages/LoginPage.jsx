@@ -41,9 +41,9 @@ export default function LoginPage() {
       <div className="auth-card">
         {/* Brand mark */}
         <div className="auth-card__brand">
-          <span className="auth-card__logo" aria-hidden="true">⚖</span>
+          <div className="auth-card__logo" aria-hidden="true">⚖</div>
           <h1 className="auth-card__title">LegalEase AI</h1>
-          <p className="auth-card__subtitle">Sign in to your account</p>
+          <p className="auth-card__subtitle">AI-powered legal document analysis<br/>for small businesses</p>
         </div>
 
         <form id="login-form" className="auth-form" onSubmit={handleSubmit} noValidate>

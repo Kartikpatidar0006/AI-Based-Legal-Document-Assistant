@@ -241,7 +241,7 @@ export default function DocumentAnalysisPage() {
       {/* ── Document header ────────────────────────────────────────────── */}
       <div className="doc-header">
         <div className="doc-header__meta">
-          <span className="doc-header__icon" aria-hidden="true">📄</span>
+          <div className="doc-header__icon-wrap" aria-hidden="true">📄</div>
           <div>
             <h1 className="doc-header__filename">{doc?.filename}</h1>
             {doc?.document_type && (
