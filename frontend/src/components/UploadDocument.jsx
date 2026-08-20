@@ -39,13 +39,13 @@ const ANALYSIS_STEPS = [
 ];
 
 export default function UploadDocument({ onClose, onComplete }) {
-  const [file, setFile]             = useState(null);
-  const [docType, setDocType]       = useState('');
-  const [dragOver, setDragOver]     = useState(false);
+  const [file, setFile] = useState(null);
+  const [docType, setDocType] = useState('');
+  const [dragOver, setDragOver] = useState(false);
 
-  const [phase, setPhase]           = useState('idle'); // idle | uploading | analyzing | done
-  const [stepIndex, setStepIndex]   = useState(0);
-  const [error, setError]           = useState('');
+  const [phase, setPhase] = useState('idle'); // idle | uploading | analyzing | done
+  const [stepIndex, setStepIndex] = useState(0);
+  const [error, setError] = useState('');
 
   const fileInputRef = useRef(null);
   const stepTimerRef = useRef(null);
@@ -135,7 +135,7 @@ export default function UploadDocument({ onClose, onComplete }) {
           <div className="upload-progress">
             <LoadingSpinner label="" />
             <p className="upload-progress__heading">Analysing your document</p>
-            <p className="upload-progress__subtext">This can take up to 30 seconds</p>
+            <p className="upload-progress__subtext">This can take some time please wait...</p>
             <div className="upload-progress__step">
               {ANALYSIS_STEPS[stepIndex]}
             </div>
@@ -145,7 +145,7 @@ export default function UploadDocument({ onClose, onComplete }) {
                   key={i}
                   className={
                     'upload-step' +
-                    (i < stepIndex  ? ' upload-step--done' : '') +
+                    (i < stepIndex ? ' upload-step--done' : '') +
                     (i === stepIndex ? ' upload-step--active' : '')
                   }
                 >
