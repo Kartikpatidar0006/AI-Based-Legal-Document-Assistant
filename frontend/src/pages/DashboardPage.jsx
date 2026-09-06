@@ -3,7 +3,10 @@
  *
  * Fetches GET /documents on mount and after each new upload.
  * Clicking a document row navigates to /documents/:id (analysis page).
- * Empty state shows a clear invitation to upload the first document.
+ *
+ * Empty state: replaced the dashed-box-with-icon pattern with a working
+ * product preview — three-step connected flow + a greyed-out example
+ * analysis card. All API calls, routing, and state logic are unchanged.
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -25,9 +28,9 @@ export default function DashboardPage() {
   const { user }   = useAuth();
   const navigate   = useNavigate();
 
-  const [documents, setDocuments] = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState('');
+  const [documents, setDocuments]   = useState([]);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState('');
   const [showUpload, setShowUpload] = useState(false);
 
   const fetchDocuments = useCallback(async () => {
@@ -69,7 +72,7 @@ export default function DashboardPage() {
           className="btn btn--primary"
           onClick={() => setShowUpload(true)}
         >
-          + Upload Document
+          ↑ Upload Document
         </button>
       </div>
 
@@ -89,24 +92,98 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* ── Empty state — onboarding flow + example preview ─────────────── */}
       {!loading && !error && documents.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-state__icon" aria-hidden="true">📋</div>
-          <h2 className="empty-state__heading">No documents yet</h2>
-          <p className="empty-state__text">
-            Upload your first contract or legal document to get an AI-powered
-            risk assessment in under a minute.
-          </p>
-          <button
-            id="empty-upload-btn"
-            className="btn btn--primary"
-            onClick={() => setShowUpload(true)}
-          >
-            Upload Your First Document
-          </button>
+        <div className="dash-onboarding">
+
+          {/* Three-step connected flow */}
+          <div className="dash-steps" aria-label="How it works">
+            {/* Step 1 */}
+            <div className="dash-step">
+              <div className="dash-step__number" aria-hidden="true">1</div>
+              <div className="dash-step__body">
+                <div className="dash-step__title">Upload</div>
+                <p className="dash-step__desc">
+                  Drop your PDF or Word document — contract, NDA, or any agreement.
+                </p>
+              </div>
+            </div>
+
+            {/* Connector line — the single deliberate animation moment */}
+            <div className="dash-step-connector" aria-hidden="true" />
+
+            {/* Step 2 */}
+            <div className="dash-step">
+              <div className="dash-step__number" aria-hidden="true">2</div>
+              <div className="dash-step__body">
+                <div className="dash-step__title">Analyse</div>
+                <p className="dash-step__desc">
+                  AI extracts every clause and scores it for legal risk under Indian law.
+                </p>
+              </div>
+            </div>
+
+            {/* Connector line */}
+            <div className="dash-step-connector" aria-hidden="true" />
+
+            {/* Step 3 */}
+            <div className="dash-step">
+              <div className="dash-step__number" aria-hidden="true">3</div>
+              <div className="dash-step__body">
+                <div className="dash-step__title">Review</div>
+                <p className="dash-step__desc">
+                  See flagged clauses, risk ratings, and plain-language explanations before you sign.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Example output preview — static, labeled, teaches the user what they'll get */}
+          <div className="dash-example" aria-hidden="true">
+            <div className="dash-example__label">
+              <span className="dash-example__label-dot" />
+              <span className="dash-example__label-text">Example output — what you'll see after analysis</span>
+            </div>
+            <div className="dash-example__doc-header">
+              <span className="dash-example__doc-name">Vendor Services Agreement.pdf</span>
+              <StatusPill status="analyzed" />
+            </div>
+            <div className="dash-example__risk-banner">
+              <span className="dash-example__risk-score">72</span>
+              <div>
+                <div className="dash-example__risk-label">Overall Risk</div>
+                <div style={{ fontSize: 'var(--text-sm)', color: 'var(--color-red-dim)', fontWeight: 600 }}>High</div>
+              </div>
+              <span className="dash-example__risk-count">6 issues flagged</span>
+            </div>
+            <div className="dash-example__rows">
+              <div className="dash-example__row">
+                <span className="dash-example__clause">Non-Compete Clause</span>
+                <span className="dash-example__clause-meta">3 yrs · All of India</span>
+                <span className="dash-example__risk-pill dash-example__risk-pill--high">High</span>
+              </div>
+              <div className="dash-example__row">
+                <span className="dash-example__clause">Payment Terms</span>
+                <span className="dash-example__clause-meta">Net 90 days</span>
+                <span className="dash-example__risk-pill dash-example__risk-pill--medium">Medium</span>
+              </div>
+              <div className="dash-example__row">
+                <span className="dash-example__clause">Liability Cap</span>
+                <span className="dash-example__clause-meta">₹50,000 ceiling</span>
+                <span className="dash-example__risk-pill dash-example__risk-pill--high">High</span>
+              </div>
+              <div className="dash-example__row">
+                <span className="dash-example__clause">IP Assignment</span>
+                <span className="dash-example__clause-meta">Broad, perpetual</span>
+                <span className="dash-example__risk-pill dash-example__risk-pill--medium">Medium</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       )}
 
+      {/* ── Document table (non-empty state) — unchanged ─────────────────── */}
       {!loading && !error && documents.length > 0 && (
         <div className="doc-table-wrap">
           <table className="doc-table" aria-label="Your documents">
@@ -148,7 +225,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ── Upload modal ─────────────────────────────────────────────────── */}
+      {/* ── Upload modal — unchanged ────────────────────────────────────── */}
       {showUpload && (
         <UploadDocument
           onClose={() => setShowUpload(false)}

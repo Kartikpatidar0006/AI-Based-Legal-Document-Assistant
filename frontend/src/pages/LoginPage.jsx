@@ -1,8 +1,10 @@
 /**
- * LoginPage — email + password login form.
+ * LoginPage — two-column split layout.
+ * Left panel: dark navy, live product-moment artifact (mock risk card).
+ * Right panel: white, the actual login form.
  *
+ * API calls, routing, and AuthContext usage are unchanged.
  * On success: stores token/user via AuthContext and navigates to Dashboard.
- * On failure: shows the error message returned by FastAPI.
  */
 
 import { useState } from 'react';
@@ -13,8 +15,8 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate  = useNavigate();
 
-  const [form, setForm]     = useState({ email: '', password: '' });
-  const [error, setError]   = useState('');
+  const [form, setForm]       = useState({ email: '', password: '' });
+  const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
@@ -37,14 +39,56 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        {/* Brand mark */}
-        <div className="auth-card__brand">
-          <div className="auth-card__logo" aria-hidden="true">⚖</div>
-          <h1 className="auth-card__title">LegalEase AI</h1>
-          <p className="auth-card__subtitle">AI-powered legal document analysis<br/>for small businesses</p>
+    <div className="login-split">
+
+      {/* ── Left panel — product-moment ─────────────────────────────────── */}
+      <div className="login-panel" aria-hidden="true">
+        {/* Wordmark */}
+        <div className="login-panel__wordmark">
+          <div className="login-panel__logo">⚖</div>
+          <div className="login-panel__app-name">
+            LegalEase AI
+            <em>for Indian businesses</em>
+          </div>
         </div>
+
+        {/* Mock artifact — a real analysis output, rendered as UI */}
+        <div className="login-artifact">
+          <div className="login-artifact__header">
+            <span className="login-artifact__doc-name">Vendor Services Agreement.pdf</span>
+            <span className="login-artifact__badge login-artifact__badge--analyzed">Analyzed</span>
+          </div>
+          <div className="login-artifact__body">
+            <div className="login-artifact__row login-artifact__row--high">
+              <span className="login-artifact__clause-name">Non-Compete</span>
+              <span className="login-artifact__clause-meta">3 yrs · All of India</span>
+              <span className="login-artifact__risk login-artifact__risk--high">High</span>
+            </div>
+            <div className="login-artifact__row login-artifact__row--medium">
+              <span className="login-artifact__clause-name">Payment Terms</span>
+              <span className="login-artifact__clause-meta">Net 90 days</span>
+              <span className="login-artifact__risk login-artifact__risk--medium">Medium</span>
+            </div>
+            <div className="login-artifact__row login-artifact__row--high">
+              <span className="login-artifact__clause-name">Liability Cap</span>
+              <span className="login-artifact__clause-meta">₹50,000 ceiling</span>
+              <span className="login-artifact__risk login-artifact__risk--high">High</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Tagline */}
+        <p className="login-panel__tagline">
+          Know what you're signing<br />before you sign it.
+        </p>
+      </div>
+
+      {/* ── Right panel — the login form ────────────────────────────────── */}
+      <div className="login-form-col">
+        <h1 className="login-form-col__heading">Sign in</h1>
+        <p className="login-form-col__sub">
+          Access your documents and risk analysis dashboard.
+        </p>
 
         <form id="login-form" className="auth-form" onSubmit={handleSubmit} noValidate>
           {error && (
@@ -86,7 +130,7 @@ export default function LoginPage() {
           <button
             id="login-submit-btn"
             type="submit"
-            className="btn btn--primary btn--full"
+            className="btn btn--primary btn--full btn--lg"
             disabled={loading}
           >
             {loading ? 'Signing in…' : 'Sign In'}
@@ -98,6 +142,7 @@ export default function LoginPage() {
           <Link to="/register" className="auth-card__link">Create one</Link>
         </p>
       </div>
+
     </div>
   );
 }
