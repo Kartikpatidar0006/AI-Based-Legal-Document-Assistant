@@ -36,7 +36,15 @@ export default function Navbar() {
               'navbar__link' + (isActive ? ' navbar__link--active' : '')
             }
           >
-            Dashboard
+            Home
+          </NavLink>
+          <NavLink
+            to="/documents"
+            className={({ isActive }) =>
+              'navbar__link' + (isActive ? ' navbar__link--active' : '')
+            }
+          >
+            Documents
           </NavLink>
           <NavLink
             to="/query"

@@ -17,12 +17,13 @@ import { getDocument, analyzeDocument } from '../api';
 import RiskBadge from '../components/common/RiskBadge';
 import SourceChip from '../components/common/SourceChip';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import AudioWalkthrough from '../components/common/AudioWalkthrough';
 
 const TABS = ['Summary', 'Clauses', 'Risk Analysis'];
 
 // ── Sub-components ───────────────────────────────────────────────────────────
 
-function SummarySection({ summaryResult }) {
+function SummarySection({ summaryResult, documentId }) {
   if (!summaryResult) return <p className="section-empty">No summary available.</p>;
 
   const { summary, key_points } = summaryResult;
@@ -37,6 +38,9 @@ function SummarySection({ summaryResult }) {
           <p key={i}>{para}</p>
         ))}
       </div>
+
+      {/* Voice walkthrough — listen to AI summary read aloud */}
+      <AudioWalkthrough documentId={documentId} />
 
       {key_points && key_points.length > 0 && (
         <div className="key-points">
@@ -297,7 +301,7 @@ export default function DocumentAnalysisPage() {
           </div>
 
           <div role="tabpanel" className="tab-panel">
-            {activeTab === 'Summary'      && <SummarySection summaryResult={doc?.summary_result} />}
+            {activeTab === 'Summary'      && <SummarySection summaryResult={doc?.summary_result} documentId={id} />}
             {activeTab === 'Clauses'      && <ClausesSection clauseResult={doc?.clause_result} />}
             {activeTab === 'Risk Analysis' && <RiskSection   riskResult={doc?.risk_result} />}
           </div>

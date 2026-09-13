@@ -8,10 +8,13 @@
  * a greyed knowledge-base preview rail (right) that teaches the product's
  * citation-grounding value before the user asks anything.
  *
- * All API calls, state logic, and data flow are unchanged.
+ * Accepts router state from HomePage navigation:
+ *   location.state.prefillQuestion — pre-fills the text input
+ *   location.state.category        — pre-selects the category filter
  */
 
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { askQuery } from '../api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
@@ -32,9 +35,11 @@ const SUGGESTED_QUESTIONS = [
 const KB_CATEGORIES = ['GST', 'MSME', 'Labour Law', 'Contracts', 'NDAs', 'IP Rights'];
 
 export default function QueryPage() {
+  const location = useLocation();
+
   const [history, setHistory]   = useState([]); // [{question, answer, sources, chunks_used}]
-  const [question, setQuestion] = useState('');
-  const [category, setCategory] = useState('');
+  const [question, setQuestion] = useState(() => location.state?.prefillQuestion || '');
+  const [category, setCategory] = useState(() => location.state?.category        || '');
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState('');
 

@@ -135,6 +135,30 @@ export async function getDocument(documentId) {
   return apiFetch(`/documents/${documentId}`);
 }
 
+/**
+ * Fetch the AI-generated audio summary as an audio Blob.
+ * Handles binary audio/mpeg response differently from JSON endpoints.
+ * @param {string} documentId
+ * @returns {Promise<Blob>}
+ */
+export async function getAudioSummary(documentId) {
+  const headers = {};
+  const token = getToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const response = await fetch(`${BASE_URL}/documents/${documentId}/audio-summary`, {
+    method: 'GET',
+    headers,
+  });
+
+  if (!response.ok) {
+    throw await parseError(response);
+  }
+
+  return response.blob();
+}
+
+
 // ── Query endpoint ────────────────────────────────────────────────────────────
 
 /**

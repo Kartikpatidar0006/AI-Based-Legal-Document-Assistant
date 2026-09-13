@@ -13,6 +13,7 @@
  * Props:
  *   onClose      — close the modal without uploading
  *   onComplete   — called with the new documentId when analysis finishes
+ *   hint         — optional short context string (e.g. from a quick-action chip)
  */
 
 import { useState, useRef, useEffect } from 'react';
@@ -38,7 +39,7 @@ const ANALYSIS_STEPS = [
   'Checking for legal risks against our knowledge base…',
 ];
 
-export default function UploadDocument({ onClose, onComplete }) {
+export default function UploadDocument({ onClose, onComplete, hint = '' }) {
   const [file, setFile] = useState(null);
   const [docType, setDocType] = useState('');
   const [dragOver, setDragOver] = useState(false);
@@ -112,6 +113,9 @@ export default function UploadDocument({ onClose, onComplete }) {
       <div className="modal-panel">
         <div className="modal-header">
           <h2 id="upload-modal-title" className="modal-title">Upload a Document</h2>
+          {hint && (
+            <p className="upload-modal-hint">{hint}</p>
+          )}
           {!isLoading && (
             <button
               id="upload-modal-close"

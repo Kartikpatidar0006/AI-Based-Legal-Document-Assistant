@@ -3,9 +3,10 @@
  *
  * Public routes:  /login, /register
  * Protected routes (wrapped in ProtectedRoute + AppLayout):
- *   /           → DashboardPage
+ *   /               → HomePage       (personalized landing + composer)
+ *   /documents      → DashboardPage  (full document list & upload)
  *   /documents/:id  → DocumentAnalysisPage
- *   /query      → QueryPage
+ *   /query          → QueryPage
  *
  * Any unknown path redirects to / (which then redirects to /login if not authed).
  */
@@ -18,6 +19,7 @@ import AppLayout               from './components/AppLayout';
 
 import LoginPage               from './pages/LoginPage';
 import RegisterPage            from './pages/RegisterPage';
+import HomePage                from './pages/HomePage';
 import DashboardPage           from './pages/DashboardPage';
 import DocumentAnalysisPage    from './pages/DocumentAnalysisPage';
 import QueryPage               from './pages/QueryPage';
@@ -34,7 +36,8 @@ export default function App() {
           {/* ── Protected (require login, render inside AppLayout) ── */}
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
-              <Route path="/"                  element={<DashboardPage />} />
+              <Route path="/"                  element={<HomePage />} />
+              <Route path="/documents"         element={<DashboardPage />} />
               <Route path="/documents/:id"     element={<DocumentAnalysisPage />} />
               <Route path="/query"             element={<QueryPage />} />
             </Route>
