@@ -55,42 +55,39 @@ export default function AudioWalkthrough({ documentId }) {
   return (
     <div className="audio-walkthrough" aria-label="Audio summary walkthrough">
       {!audioUrl && !loading && (
-        <div className="audio-walkthrough__cta">
+        <>
+          <div className="audio-walkthrough__info">
+            <span className="audio-walkthrough__label">Voice Walkthrough</span>
+            <span className="audio-walkthrough__sub">AI-narrated overview of this contract</span>
+          </div>
           <button
             type="button"
-            className="btn btn--outline-teal audio-walkthrough__btn"
+            className="audio-walkthrough__btn"
             onClick={handleLoadAudio}
             aria-label="Listen to summary audio"
           >
-            <span className="audio-walkthrough__icon" aria-hidden="true">🔊</span>
-            <span className="audio-walkthrough__btn-text">Listen to Summary</span>
+            🔊 Listen
           </button>
-          <span className="audio-walkthrough__hint">
-            AI-narrated voice overview of this contract
-          </span>
-        </div>
+        </>
       )}
 
       {loading && (
-        <div className="audio-walkthrough__loading" role="status">
-          <span className="audio-walkthrough__spinner" aria-hidden="true" />
-          <span>Preparing audio walkthrough…</span>
+        <div role="status" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 'var(--text-sm)', color: 'var(--color-muted)' }}>
+          <div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid var(--color-border)', borderTopColor: 'var(--color-primary)', animation: 'spin 0.7s linear infinite' }} />
+          Preparing audio walkthrough…
         </div>
       )}
 
       {audioUrl && !loading && (
-        <div className="audio-walkthrough__player-wrap">
-          <div className="audio-walkthrough__player-header">
-            <div className="audio-walkthrough__status">
-              <span className="audio-walkthrough__badge-dot" aria-hidden="true" />
-              <span className="audio-walkthrough__badge-text">Audio Summary</span>
-            </div>
+        <>
+          <div className="audio-walkthrough__info">
+            <span className="audio-walkthrough__label">Audio Summary</span>
             <button
               type="button"
-              className="audio-walkthrough__reload-btn"
+              className="audio-walkthrough__btn"
               onClick={handleLoadAudio}
               title="Refresh audio"
-              aria-label="Regenerate audio"
+              style={{ padding: '4px 10px', fontSize: 'var(--text-xs)' }}
             >
               ↻ Reload
             </button>
@@ -103,21 +100,11 @@ export default function AudioWalkthrough({ documentId }) {
           >
             Your browser does not support the audio element.
           </audio>
-        </div>
+        </>
       )}
 
       {error && (
-        <div className="audio-walkthrough__error form-error" role="alert">
-          <span className="audio-walkthrough__error-icon" aria-hidden="true">⚠️</span>
-          <span>{error}</span>
-          <button
-            type="button"
-            className="audio-walkthrough__retry-btn"
-            onClick={handleLoadAudio}
-          >
-            Try again
-          </button>
-        </div>
+        <div className="audio-walkthrough__error" role="alert">{error}</div>
       )}
     </div>
   );
