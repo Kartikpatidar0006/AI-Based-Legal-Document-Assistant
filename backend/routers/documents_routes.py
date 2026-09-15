@@ -21,10 +21,16 @@ NOTE on /analyze performance:
     would poll a status endpoint — add that as a future enhancement.
 """
 
+import hashlib
+import logging
+import re
+import time
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from backend.dependencies import get_current_user, get_db
@@ -48,16 +54,18 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from document_ingest import extract_text          # PDF/DOCX/Image → text dict
-from document_processor import full_document_analysis  # summarize + clauses + risks
+from document_processor import full_document_analysis, generate_audio_summary, AUDIO_CACHE_DIR  # summarize + clauses + risks + audio
 
 # ── Upload folder ──────────────────────────────────────────────────────────────
 UPLOADS_DIR = _PROJECT_ROOT / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/documents", tags=["Documents"])
 
 
-# ── POST /documents/upload ────────────────────────────────────────────────────
+# ── POST /documents/upload ────────────────────────────────────────────────    
 
 @router.post(
     "/upload",
@@ -121,7 +129,8 @@ def upload_document(
     finally:
         file.file.close()
 
-    # ── 3. Extract text ────────────────────────────────────────────────────────
+    # ── 3. Extract text ─────────────────────────────────────────────────
+    t_extract_start = time.perf_counter()
     try:
         ingest_result = extract_text(save_path)
     except Exception as exc:
@@ -131,14 +140,26 @@ def upload_document(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Text extraction failed: {exc}",
         )
+    t_extract = time.perf_counter() - t_extract_start
+    extracted_text = ingest_result.get("text", "")
+    char_count = ingest_result.get("char_count", len(extracted_text))
+    # SHA-256 of extracted text — used to verify cache validity on future analyses
+    content_hash = hashlib.sha256(extracted_text.encode("utf-8", errors="replace")).hexdigest() if extracted_text else None
+    logger.info(
+        "[PERF] upload/extract: %.2fs | char_count=%d | method=%s | sha256=%s | file=%s",
+        t_extract, char_count, ingest_result.get("extraction_method", "unknown"),
+        (content_hash or "")[:12] + "...", original_name,
+    )
 
-    # ── 4. Persist document record ─────────────────────────────────────────────
+    # ── 4. Persist document record ────────────────────────────────────────────
     doc = Document(
         user_id=current_user.id,
         filename=original_name,
         document_type=document_type,
         file_path=str(save_path),
         status="pending",
+        extracted_text=extracted_text or None,  # stored for reuse during /analyze
+        content_hash=content_hash,
     )
     try:
         db.add(doc)
@@ -155,14 +176,14 @@ def upload_document(
         filename=doc.filename,
         document_type=doc.document_type,
         status=doc.status,
-        char_count=ingest_result.get("char_count", 0),
+        char_count=char_count,
         extraction_method=ingest_result.get("extraction_method", "unknown"),
         extraction_warnings=ingest_result.get("warnings", []),
         upload_date=doc.upload_date,
     )
 
 
-# ── POST /documents/{document_id}/analyze ─────────────────────────────────────
+# ── POST /documents/{document_id}/analyze ────────────────────────────────────
 
 @router.post(
     "/{document_id}/analyze",
@@ -179,58 +200,145 @@ def analyze_document(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> AnalyzeResponse:
-    """
-    Analysis flow:
-        1. Fetch document row, enforce ownership.
-        2. Re-extract text from saved file.
-        3. Run full_document_analysis() (summarize + clauses + risks).
-        4. Persist each risk flag as a risk_flags row.
-        5. Update document status to 'ready'.
-        6. Return full analysis result.
-    """
-    # ── 1. Fetch & authorise ───────────────────────────────────────────────────
-    doc = db.query(Document).filter(Document.id == document_id).first()
+    from datetime import timedelta
+    STALE_PROCESSING_TIMEOUT = timedelta(minutes=15)
+
+    t_total_start = time.perf_counter()
+
+    # ── 1. Atomic row-lock: SELECT FOR UPDATE ─────────────────────────────
+    # with_for_update() issues a Postgres-level row lock inside the current
+    # transaction, ensuring that exactly one request can read-then-write the
+    # status field at a time. Any concurrent call blocks here until the first
+    # transaction commits and its lock is released.
+    doc = (
+        db.query(Document)
+        .filter(Document.id == document_id)
+        .with_for_update()            # <── ATOMIC: row is locked until commit
+        .first()
+    )
     if doc is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found.")
     if doc.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied.")
 
-    # ── 2. Extract text from file ──────────────────────────────────────────────
-    file_path = Path(doc.file_path)
-    if not file_path.exists():
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Uploaded file not found on disk: {doc.file_path}",
+    # ── 2. Stale-processing guard (crashed worker recovery) ───────────────
+    # If a previous worker set status=processing but then crashed, the record
+    # is stuck forever. We reset it to 'pending' after a timeout so the next
+    # request can re-run the pipeline.
+    if doc.status == "processing" and doc.processing_started_at is not None:
+        now_utc = datetime.now(timezone.utc)
+        if now_utc - doc.processing_started_at > STALE_PROCESSING_TIMEOUT:
+            logger.warning(
+                "[STALE] document_id=%s was stuck in 'processing' since %s — resetting to pending.",
+                document_id, doc.processing_started_at.isoformat(),
+            )
+            doc.status = "pending"
+            doc.processing_started_at = None
+            db.flush()
+
+    # ── 3. IDEMPOTENCY GUARD ───────────────────────────────────────────
+    if (
+        doc.status == "ready"
+        and doc.summary_result is not None
+        and doc.clause_result is not None
+        and doc.risk_result is not None
+    ):
+        elapsed = time.perf_counter() - t_total_start
+        logger.info(
+            "[CACHE HIT] analyze: document_id=%s returned cached analysis in %.3fs",
+            document_id, elapsed,
+        )
+        persisted_count = db.query(RiskFlag).filter(RiskFlag.document_id == doc.id).count()
+        return AnalyzeResponse(
+            filename=doc.filename,
+            summary_result=doc.summary_result,
+            clause_result=doc.clause_result,
+            risk_result=doc.risk_result,
+            risks_persisted=persisted_count,
         )
 
-    try:
-        ingest_result = extract_text(file_path)
-    except Exception as exc:
+    # ── 4. Repair path: status=ready but JSONB blobs are NULL ───────────────
+    # This happens if a previous worker crashed after setting status=ready but
+    # before flushing the JSONB results. Re-run the pipeline to repair the record.
+    if doc.status == "ready" and (
+        doc.summary_result is None or doc.clause_result is None or doc.risk_result is None
+    ):
+        logger.warning(
+            "[REPAIR] document_id=%s is status=ready but analysis cache is incomplete — re-running pipeline.",
+            document_id,
+        )
+        doc.status = "pending"   # will transition to processing below
+        db.flush()
+
+    # ── 5. Concurrency guard (active in-flight pipeline) ──────────────────
+    # Reached only after the SELECT FOR UPDATE — so if we see 'processing' here
+    # it means a genuinely concurrent request that started BEFORE our lock.
+    if doc.status == "processing":
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Text extraction failed: {exc}",
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Analysis is already in progress for this document. Please wait and try again.",
         )
 
-    document_text = ingest_result.get("text", "")
+    # ── 6. Resolve document text (prefer stored; fall back to disk) ─────────
+    if doc.extracted_text and doc.extracted_text.strip():
+        document_text = doc.extracted_text
+        logger.info(
+            "[CACHE HIT] extracted_text: reusing stored text for document_id=%s (char_count=%d)",
+            document_id, len(document_text),
+        )
+    else:
+        # Fall back: file may exist but text was never cached (e.g. uploaded before migration)
+        file_path = Path(doc.file_path)
+        if not file_path.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Uploaded file not found on disk: {doc.file_path}",
+            )
+        t_extract_start = time.perf_counter()
+        try:
+            ingest_result = extract_text(file_path)
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Text extraction failed: {exc}",
+            )
+        t_extract = time.perf_counter() - t_extract_start
+        document_text = ingest_result.get("text", "")
+        logger.info(
+            "[CACHE MISS] extracted_text: re-extracted from disk in %.2fs (char_count=%d)",
+            t_extract, len(document_text),
+        )
+        # Store for future calls and compute SHA-256 hash
+        doc.extracted_text = document_text or None
+        if document_text:
+            doc.content_hash = hashlib.sha256(
+                document_text.encode("utf-8", errors="replace")
+            ).hexdigest()
+        db.flush()
+
     if not document_text.strip():
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="No text could be extracted from this document. It may be corrupted or blank.",
         )
 
-    # Mark as processing before Gemini calls
+    # Mark as processing and record timestamp for stale-worker detection
     doc.status = "processing"
+    doc.processing_started_at = datetime.now(timezone.utc)
     db.flush()
 
-    # ── 3. Run AI analysis ─────────────────────────────────────────────────────
-    # NOTE: This is synchronous and will block the request thread for 15–60s.
-    # Production upgrade path: use FastAPI BackgroundTasks or a Celery queue
-    # so the client receives an immediate job_id and polls for completion.
+    # ── 5. Run AI analysis with per-step timing ───────────────────────────
     try:
+        t_pipeline_start = time.perf_counter()
         analysis = full_document_analysis(
             document_text=document_text,
             filename=doc.filename,
             document_type=doc.document_type,
+        )
+        t_pipeline = time.perf_counter() - t_pipeline_start
+        logger.info(
+            "[PERF] full_document_analysis: %.2fs | file=%s | char_count=%d",
+            t_pipeline, doc.filename, len(document_text),
         )
     except Exception as exc:
         doc.status = "error"
@@ -240,7 +348,13 @@ def analyze_document(
             detail=f"AI analysis pipeline failed: {exc}",
         )
 
-    # ── 4. Persist risk flags ──────────────────────────────────────────────────
+    # ── 6. Persist analysis results as JSONB ─────────────────────────────
+    doc.summary_result = analysis.get("summary_result") or None
+    doc.clause_result  = analysis.get("clause_result")  or None
+    doc.risk_result    = analysis.get("risk_result")    or None
+    db.flush()
+
+    # ── 7. Persist risk flags ─────────────────────────────────────────────
     # Delete any previously persisted flags for this document (idempotent re-analyze)
     db.query(RiskFlag).filter(RiskFlag.document_id == doc.id).delete()
 
@@ -280,7 +394,15 @@ def analyze_document(
         db.add(flag)
         persisted_count += 1
 
-    # ── 5. Update document status ──────────────────────────────────────────────
+    # ── 5. Cache summary text for voice walkthrough & update status ────────────
+    summary_text = analysis.get("summary_result", {}).get("summary", "")
+    if summary_text:
+        try:
+            summary_cache_path = AUDIO_CACHE_DIR / f"{doc.id}_summary.txt"
+            summary_cache_path.write_text(summary_text, encoding="utf-8")
+        except Exception:
+            pass
+
     doc.status = "ready"
     db.flush()
 
@@ -351,4 +473,119 @@ def get_document(
         status=doc.status,
         file_path=doc.file_path,
         risk_flags=[RiskFlagResponse.model_validate(f) for f in flags],
+        # Return cached analysis blobs so frontend can render without calling /analyze again
+        summary_result=doc.summary_result,
+        clause_result=doc.clause_result,
+        risk_result=doc.risk_result,
     )
+
+
+# ── GET /documents/{document_id}/audio-summary ────────────────────────────────
+
+@router.get(
+    "/{document_id}/audio-summary",
+    summary="Get voice audio summary of the document (MP3)",
+    description=(
+        "Returns an MP3 audio narration of the AI-generated summary. "
+        "The document must be analyzed first (/analyze). Uses cached audio "
+        "when available for instant playback."
+    ),
+    responses={
+        200: {
+            "content": {"audio/mpeg": {}},
+            "description": "MP3 audio stream of the contract summary.",
+        },
+        400: {"description": "Document has not been analyzed yet."},
+        403: {"description": "Access denied."},
+        404: {"description": "Document not found."},
+    },
+)
+def get_audio_summary(
+    document_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> FileResponse:
+    """
+    Audio summary flow:
+        1. Fetch document and enforce ownership (404 / 403).
+        2. Ensure document has been analyzed (status == 'ready'); return 400 if not.
+        3. Retrieve stored summary text (from audio_cache/{doc.id}_summary.txt or re-summarize).
+        4. Call voice_walkthrough.generate_audio_summary() -> cached/generated Path.
+        5. Return FileResponse with media_type="audio/mpeg".
+    """
+    doc = db.query(Document).filter(Document.id == document_id).first()
+    if doc is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found.")
+    if doc.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied.")
+
+    # Must be analyzed before audio can be listened to
+    if doc.status != "ready":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This document has not been analysed yet. Please run analysis first to generate a summary.",
+        )
+
+    # Fetch stored summary text
+    summary_cache_file = AUDIO_CACHE_DIR / f"{doc.id}_summary.txt"
+    summary_text = ""
+    if summary_cache_file.exists():
+        try:
+            summary_text = summary_cache_file.read_text(encoding="utf-8").strip()
+        except Exception:
+            summary_text = ""
+
+    # Fallback if summary cache file missing for an already-analyzed document:
+    # Re-extract and summarize from the document text
+    if not summary_text:
+        file_path = Path(doc.file_path)
+        if not file_path.exists():
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Document file not found on disk: {doc.file_path}",
+            )
+        try:
+            from document_processor import summarize_document
+            ingest_result = extract_text(file_path)
+            doc_text = ingest_result.get("text", "")
+            if not doc_text.strip():
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="No readable text in document to summarize.",
+                )
+            summary_res = summarize_document(doc_text, doc.filename)
+            summary_text = summary_res.get("summary", "")
+            if summary_text:
+                summary_cache_file.write_text(summary_text, encoding="utf-8")
+        except HTTPException:
+            raise
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to retrieve document summary: {exc}",
+            )
+
+    if not summary_text:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No summary text is available for this document.",
+        )
+
+    try:
+        audio_path = generate_audio_summary(summary_text, filename_hint=doc.filename)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate audio summary: {exc}",
+        )
+
+    # Safe export filename
+    clean_stem = re.sub(r'[^a-zA-Z0-9_\-]', '_', Path(doc.filename).stem)
+    audio_filename = f"{clean_stem}_summary.mp3"
+
+    return FileResponse(
+        path=str(audio_path),
+        media_type="audio/mpeg",
+        filename=audio_filename,
+    )
+

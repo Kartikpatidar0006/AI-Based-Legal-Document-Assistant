@@ -35,3 +35,6 @@ psycopg2-binary                  # [W3] PostgreSQL adapter
 
 # Utilities
 python-dotenv
+
+# Voice / Text-to-Speech
+gTTS>=2.5.4

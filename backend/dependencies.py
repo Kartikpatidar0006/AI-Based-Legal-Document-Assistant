@@ -49,11 +49,11 @@ def get_db() -> Generator[Session, None, None]:
 # HTTPBearer extracts the raw token from `Authorization: Bearer <token>`.
 # Swagger UI's "Authorize" popup will simply ask for the token string,
 # avoiding the form-data username/password flow of OAuth2PasswordBearer.
-_http_bearer = HTTPBearer()
+_http_bearer = HTTPBearer(auto_error=False)
 
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(_http_bearer),
+    credentials: HTTPAuthorizationCredentials | None = Depends(_http_bearer),
     db: Session = Depends(get_db),
 ) -> User:
     """
@@ -67,6 +67,13 @@ def get_current_user(
         HTTPException 401 — token missing, invalid, or expired
         HTTPException 404 — user_id from token no longer in database
     """
+    if not credentials or not credentials.credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required — token is missing.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     payload = decode_access_token(credentials.credentials)  # raises 401 on failure
 
     user_id_str: str | None = payload.get("sub")

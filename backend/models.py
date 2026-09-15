@@ -29,7 +29,7 @@ from sqlalchemy import (
     String,
     Text,
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSON, JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.database import Base
@@ -108,6 +108,20 @@ class Document(Base):
     )
     file_path: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[str] = mapped_column(String(50), nullable=False, default="pending", index=True)
+
+    # ── Analysis cache columns (added by migration_add_analysis_cache.sql) ─────
+    # extracted_text: stored once at upload time so /analyze never re-reads disk
+    extracted_text: Mapped[str | None] = mapped_column(Text, nullable=True, default=None)
+    # Full AI pipeline results — cached after first successful analysis
+    summary_result: Mapped[dict | None] = mapped_column(JSONB, nullable=True, default=None)
+    clause_result:  Mapped[dict | None] = mapped_column(JSONB, nullable=True, default=None)
+    risk_result:    Mapped[dict | None] = mapped_column(JSONB, nullable=True, default=None)
+    # SHA-256 hex of extracted_text — used to detect file changes that invalidate cache
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True, default=None)
+    # UTC timestamp set when status → 'processing'; used to detect stale/crashed workers
+    processing_started_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True, default=None
+    )
 
     # Relationships
     user:             Mapped["User"]               = relationship("User",          back_populates="documents")

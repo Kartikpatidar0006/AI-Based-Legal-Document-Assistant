@@ -21,8 +21,17 @@ Alternative docs (ReDoc):
     http://localhost:8000/redoc
 """
 
+import logging
 import sys
 from pathlib import Path
+
+# ── Configure logging early so all [PERF] / [CACHE] messages are visible ──────
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s  %(levelname)-8s  %(name)s  %(message)s",
+    datefmt="%H:%M:%S",
+    stream=sys.stdout,
+)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -88,15 +97,27 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup() -> None:
     """
-    Safety-net: create any tables that don't exist yet.
-
-    IMPORTANT: db_schema.sql is the source of truth for the schema.
-    Run it manually with:
-        psql -U <user> -d <database> -f db_schema.sql
-    This create_all() is only a convenience fallback for local development
-    so you don't have to run psql before the first uvicorn launch.
-    It will NOT alter or drop existing tables — purely additive.
+    Validate environment variables and initialize database tables.
     """
+    import os
+    
+    # ── 1. Validate required environment variables ────────────────────────────
+    missing_vars = []
+    if not os.getenv("JWT_SECRET_KEY"):
+        missing_vars.append("JWT_SECRET_KEY")
+    if not os.getenv("DATABASE_URL"):
+        missing_vars.append("DATABASE_URL")
+    if not os.getenv("GEMINI_API_KEY"):
+        missing_vars.append("GEMINI_API_KEY")
+
+    if missing_vars:
+        print(f"⚠️  WARNING: Missing required environment variable(s): {', '.join(missing_vars)}")
+        print("   Authentication, database, or AI analysis features may fail.")
+        print("   Please check your .env configuration file.")
+    else:
+        print("✅ Environment variables verified (JWT_SECRET_KEY, DATABASE_URL, GEMINI_API_KEY configured).")
+
+    # ── 2. Database table safety-net ──────────────────────────────────────────
     try:
         # Import all models so Base.metadata knows about them
         import backend.models  # noqa: F401

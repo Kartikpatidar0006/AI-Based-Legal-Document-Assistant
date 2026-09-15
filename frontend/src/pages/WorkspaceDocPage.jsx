@@ -413,8 +413,12 @@ export default function WorkspaceDocPage() {
     setError('');
     try {
       const data = await getDocument(id);
+      // Merge the cached analysis fields (summary_result, clause_result, risk_result)
+      // that GET /documents/{id} now returns directly from the DB.
+      // This means WorkspaceDocPage never needs to call /analyze on its own
+      // for a document that is already status=ready.
       setDoc(data);
-      // Auto-select Risk Analysis if it exists and has issues
+      // Auto-select Risk Analysis tab if there are flagged issues
       if (data?.risk_result?.total_issues_found > 0) {
         setActiveTab('Risk Analysis');
       }
@@ -432,7 +436,17 @@ export default function WorkspaceDocPage() {
     setAnalyzeError('');
     try {
       const result = await analyzeDocument(id);
-      setDoc((prev) => ({ ...prev, ...result, status: 'analyzed' }));
+      // Merge the fresh analysis into doc state so tabs render immediately
+      setDoc((prev) => ({
+        ...prev,
+        status: 'ready',
+        summary_result: result.summary_result,
+        clause_result:  result.clause_result,
+        risk_result:    result.risk_result,
+      }));
+      if (result.risk_result?.total_issues_found > 0) {
+        setActiveTab('Risk Analysis');
+      }
     } catch (err) {
       setAnalyzeError(err.message || 'Analysis failed. Please try again.');
     } finally {
@@ -465,7 +479,18 @@ export default function WorkspaceDocPage() {
     );
   }
 
-  const hasAnalysis = doc?.summary_result || doc?.clause_result || doc?.risk_result;
+  // hasAnalysis: true when the server has returned cached analysis data.
+  // This is populated directly by GET /documents/{id} for status=ready docs,
+  // so the "Run Analysis Now" button never shows for already-analyzed documents.
+  const hasAnalysis = !!(doc?.summary_result || doc?.clause_result || doc?.risk_result);
+
+  // Show the analyze prompt only when the document is NOT ready and has no cached data.
+  const showAnalyzePrompt = !hasAnalysis && doc?.status !== 'ready';
+
+  // Show a repair prompt when status=ready but cached analysis is missing.
+  // This indicates a previous analysis worker crashed after updating status
+  // but before persisting the JSONB results. The backend handles re-analysis.
+  const showRepairPrompt = !hasAnalysis && doc?.status === 'ready';
 
   return (
     <div className="workspace-doc">
@@ -502,8 +527,8 @@ export default function WorkspaceDocPage() {
       {/* ── Left: Analysis panel ──────────────────────────────────────── */}
       <main className="analysis-panel" id="analysis-panel" aria-label="Document analysis">
 
-        {/* Not-yet-analyzed */}
-        {!hasAnalysis && (
+        {/* Not-yet-analyzed — only shown for pending/error docs with no cached data */}
+        {showAnalyzePrompt && (
           <div className="not-analyzed-notice">
             <p>This document hasn't been analysed yet.</p>
             {analyzeError && <div className="form-error" role="alert">{analyzeError}</div>}
@@ -514,6 +539,28 @@ export default function WorkspaceDocPage() {
               disabled={analyzing}
             >
               {analyzing ? 'Analysing… (up to 30 s)' : 'Run Analysis Now'}
+            </button>
+          </div>
+        )}
+
+        {/* Repair prompt — status=ready but cached analysis is missing (crashed worker) */}
+        {showRepairPrompt && (
+          <div className="not-analyzed-notice">
+            <p style={{ marginBottom: '8px' }}>
+              <strong>Analysis incomplete</strong>
+            </p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted, #888)', marginBottom: '16px' }}>
+              This document was marked as ready but its analysis data is missing,
+              likely due to a server interruption. Click below to repair it.
+            </p>
+            {analyzeError && <div className="form-error" role="alert">{analyzeError}</div>}
+            <button
+              id="repair-analysis-btn"
+              className="btn btn--primary"
+              onClick={handleRunAnalysis}
+              disabled={analyzing}
+            >
+              {analyzing ? 'Repairing… (up to 30 s)' : 'Repair Analysis'}
             </button>
           </div>
         )}
@@ -548,7 +595,7 @@ export default function WorkspaceDocPage() {
               aria-labelledby={`tab-${activeTab.toLowerCase().replace(' ', '-')}`}
             >
               {activeTab === 'Summary' && (
-                <SummarySection summaryResult={doc?.summary_result} documentId={id} />
+                <SummarySection summaryResult={doc?.summary_result} documentId={id || doc?.id} />
               )}
               {activeTab === 'Clauses' && (
                 <ClausesSection clauseResult={doc?.clause_result} />

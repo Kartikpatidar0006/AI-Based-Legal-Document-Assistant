@@ -1,0 +1,197 @@
+/*
+ * src/components/common/AudioWalkthrough.css
+ * LegalEase AI — Listen to Summary Accessibility Feature
+ *
+ * Visual design aligns with the LegalEase AI theme:
+ * Navy: #1E2761 | Teal: #00A896 | Gold: #F9A826 | Ice: #CADCFC | Light: #F5F7FB
+ */
+
+.audio-walkthrough {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+  background: linear-gradient(135deg, #F5F7FB 0%, #edf1fa 100%);
+  border: 1px solid #CADCFC;
+  border-left: 4px solid #00A896;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(30, 39, 97, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.audio-walkthrough:focus-within {
+  border-color: #00A896;
+  box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.15);
+}
+
+.audio-walkthrough__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.audio-walkthrough__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.audio-walkthrough__label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #1E2761;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.audio-walkthrough__sub {
+  font-size: 0.75rem;
+  color: #55627a;
+}
+
+/* Styled "Listen to Summary" button */
+.audio-walkthrough__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.15rem;
+  background-color: #1E2761;
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(30, 39, 97, 0.15);
+}
+
+.audio-walkthrough__btn:hover:not(:disabled) {
+  background-color: #00A896;
+  color: #FFFFFF;
+  box-shadow: 0 3px 8px rgba(0, 168, 150, 0.25);
+  transform: translateY(-1px);
+}
+
+.audio-walkthrough__btn:focus-visible {
+  outline: 2px solid #F9A826;
+  outline-offset: 2px;
+}
+
+.audio-walkthrough__btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(30, 39, 97, 0.2);
+}
+
+.audio-walkthrough__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.audio-walkthrough__btn-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Secondary reload button */
+.audio-walkthrough__reload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+  color: #1E2761;
+  border: 1px solid #CADCFC;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.audio-walkthrough__reload-btn:hover:not(:disabled) {
+  background: #CADCFC;
+  color: #1E2761;
+}
+
+.audio-walkthrough__reload-btn:focus-visible {
+  outline: 2px solid #F9A826;
+  outline-offset: 1px;
+}
+
+/* Loading state */
+.audio-walkthrough__loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #1E2761;
+  padding: 0.4rem 0;
+}
+
+.audio-walkthrough__spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid #CADCFC;
+  border-top-color: #00A896;
+  animation: audio-spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes audio-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Audio player container (native controls unchanged) */
+.audio-walkthrough__player-container {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.audio-walkthrough__player {
+  width: 100%;
+  height: 38px;
+  border-radius: 6px;
+  outline: none;
+}
+
+.audio-walkthrough__player:focus-visible {
+  outline: 2px solid #00A896;
+  outline-offset: 2px;
+}
+
+/* Inline error state */
+.audio-walkthrough__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #FDF2F2;
+  border: 1px solid #F8B4B4;
+  border-left: 3px solid #D64550;
+  border-radius: 4px;
+  color: #9B1C22;
+  font-size: 0.775rem;
+  line-height: 1.4;
+  margin-top: 0.25rem;
+}
+
+.audio-walkthrough__error-icon {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+}

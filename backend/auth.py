@@ -19,7 +19,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import HTTPException, status
-from jose import JWTError, jwt
+from jose import JWTError, ExpiredSignatureError, jwt
 from passlib.context import CryptContext
 
 # ── Load .env ─────────────────────────────────────────────────────────────────
@@ -82,17 +82,33 @@ def decode_access_token(token: str) -> dict:
         The decoded payload dict (includes "sub" and "exp").
 
     Raises:
-        HTTPException 401 if the token is invalid, expired, or tampered with.
+        HTTPException 401 if the token is missing, invalid, expired, or tampered with.
     """
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials — token is invalid or expired.",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+    if not token or not isinstance(token, str):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials — token is missing or malformed.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
         if payload.get("sub") is None:
-            raise credentials_exception
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials — token missing user identifier.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
         return payload
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session expired. Please log in again.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     except JWTError:
-        raise credentials_exception
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials — token is invalid or expired.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

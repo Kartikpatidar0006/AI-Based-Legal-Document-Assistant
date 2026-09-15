@@ -95,7 +95,7 @@ class RiskFlagResponse(BaseModel):
 
 
 class DocumentDetailResponse(BaseModel):
-    """GET /documents/{id} — full document info with persisted risk flags."""
+    """GET /documents/{id} — full document info with persisted risk flags and cached analysis."""
     id:            uuid.UUID
     filename:      str
     document_type: str | None
@@ -103,6 +103,10 @@ class DocumentDetailResponse(BaseModel):
     status:        str
     file_path:     str
     risk_flags:    list[RiskFlagResponse]
+    # Cached AI analysis results (None until first /analyze call succeeds)
+    summary_result: dict[str, Any] | None = None
+    clause_result:  dict[str, Any] | None = None
+    risk_result:    dict[str, Any] | None = None
 
     model_config = {"from_attributes": True}
 

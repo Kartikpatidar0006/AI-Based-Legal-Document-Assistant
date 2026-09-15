@@ -211,10 +211,19 @@ function DocCard({ msg, onView }) {
 
         {/* Error state */}
         {msg.phase === 'error' && (
-          <div className="ca-doc-card__footer">
-            <p style={{ color: 'var(--color-red-dim)', fontSize: 'var(--text-sm)' }}>
+          <div className="ca-doc-card__footer" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <p style={{ color: 'var(--color-red-dim)', fontSize: 'var(--text-sm)', margin: 0 }}>
               {msg.error || 'Something went wrong. Please try again.'}
             </p>
+            {msg.error && msg.error.includes('Session expired') && (
+              <a
+                href="/login"
+                className="btn btn--sm btn--primary"
+                style={{ alignSelf: 'flex-start', textDecoration: 'none' }}
+              >
+                Log In Again
+              </a>
+            )}
           </div>
         )}
       </div>

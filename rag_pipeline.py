@@ -282,7 +282,7 @@ def call_gemini(
     from google import genai  # local import
     from google.genai import types
 
-    candidate_models = [GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-flash-latest", "gemini-3.5-flash"]
+    candidate_models = [GEMINI_MODEL, "gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.1-pro-preview"]
     
     last_error = None
     for attempt in range(1, max_retries + 2):  

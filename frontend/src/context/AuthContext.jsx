@@ -8,7 +8,7 @@
  */
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { loginUser, registerUser } from '../api';
+import { loginUser, registerUser, isTokenExpired } from '../api';
 
 const AuthContext = createContext(null);
 
@@ -22,17 +22,37 @@ export function AuthProvider({ children }) {
     try {
       const savedToken = localStorage.getItem('access_token');
       const savedUser  = localStorage.getItem('user');
-      if (savedToken && savedUser) {
+      if (savedToken && savedUser && !isTokenExpired(savedToken)) {
         setToken(savedToken);
         setUser(JSON.parse(savedUser));
+      } else {
+        // Token is missing, expired, or malformed — clear stale state
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+        setToken(null);
+        setUser(null);
       }
     } catch {
       // corrupted storage — start fresh
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
+      setToken(null);
+      setUser(null);
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // ── Handle session-expired events from api.js ─────────────────────────────
+  useEffect(() => {
+    function handleSessionExpired() {
+      setToken(null);
+      setUser(null);
+    }
+    window.addEventListener('legalease:session-expired', handleSessionExpired);
+    return () => {
+      window.removeEventListener('legalease:session-expired', handleSessionExpired);
+    };
   }, []);
 
   // ── Persist helpers ─────────────────────────────────────────────────────────

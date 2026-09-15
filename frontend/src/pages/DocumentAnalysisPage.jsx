@@ -301,7 +301,7 @@ export default function DocumentAnalysisPage() {
           </div>
 
           <div role="tabpanel" className="tab-panel">
-            {activeTab === 'Summary'      && <SummarySection summaryResult={doc?.summary_result} documentId={id} />}
+            {activeTab === 'Summary'      && <SummarySection summaryResult={doc?.summary_result} documentId={id || doc?.id} />}
             {activeTab === 'Clauses'      && <ClausesSection clauseResult={doc?.clause_result} />}
             {activeTab === 'Risk Analysis' && <RiskSection   riskResult={doc?.risk_result} />}
           </div>

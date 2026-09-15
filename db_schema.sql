@@ -61,15 +61,32 @@ CREATE TABLE IF NOT EXISTS documents (
     status        VARCHAR(50)   NOT NULL DEFAULT 'pending'
                                 CHECK (status IN ('pending', 'processing', 'ready', 'error'))
                                                        -- pipeline stage of this document
+
+    -- ── Analysis cache columns ───────────────────────────────────────────────
+    -- Populated at upload time / after first successful analysis.
+    -- Allows /analyze to skip disk re-reads and return cached results instantly.
+    , extracted_text        TEXT          DEFAULT NULL  -- raw text; stored once at upload
+    , summary_result        JSONB         DEFAULT NULL  -- cached summarize_document() output
+    , clause_result         JSONB         DEFAULT NULL  -- cached extract_clauses() output
+    , risk_result           JSONB         DEFAULT NULL  -- cached detect_risks() output
+    , content_hash          VARCHAR(64)   DEFAULT NULL  -- SHA-256 of extracted_text for cache validity
+    , processing_started_at TIMESTAMPTZ   DEFAULT NULL  -- set when status→processing; detects stale workers
 );
 
 -- Indexes: most queries filter by user_id; some also filter by status
 CREATE INDEX IF NOT EXISTS idx_documents_user_id ON documents (user_id);
 CREATE INDEX IF NOT EXISTS idx_documents_status  ON documents (status);
+-- Partial index for fast cache-hit checks
+CREATE INDEX IF NOT EXISTS idx_documents_risk_result_cached ON documents (id) WHERE risk_result IS NOT NULL;
+-- Index for stale-processing detection (crash recovery)
+CREATE INDEX IF NOT EXISTS idx_documents_processing_started ON documents (processing_started_at) WHERE status = 'processing';
 
 COMMENT ON TABLE  documents               IS 'Legal documents uploaded by users for analysis.';
 COMMENT ON COLUMN documents.document_type IS 'High-level type label: NDA, Employment, Rental, etc.';
 COMMENT ON COLUMN documents.status        IS 'Tracks pipeline stage: pending → processing → ready | error.';
+COMMENT ON COLUMN documents.extracted_text        IS 'Raw text stored at upload time; reused by /analyze.';
+COMMENT ON COLUMN documents.content_hash          IS 'SHA-256 of extracted_text; used to detect file changes.';
+COMMENT ON COLUMN documents.processing_started_at IS 'Set when status becomes processing; used to reset stale workers.';
 
 
 -- ---------------------------------------------------------------------------

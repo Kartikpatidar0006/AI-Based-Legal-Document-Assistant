@@ -10,7 +10,46 @@
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
-// ── Token management ─────────────────────────────────────────────────────────
+// ── Token management & session handling ──────────────────────────────────────
+
+/**
+ * Check whether a JWT token is expired or malformed.
+ * Inspects the 'exp' claim from the base64-encoded payload.
+ */
+export function isTokenExpired(token) {
+  if (!token || typeof token !== 'string') return true;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return true;
+    const base64Url = parts[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    const payload = JSON.parse(jsonPayload);
+    if (!payload || !payload.exp) return false;
+    // Add 5-second buffer to handle network latency
+    return payload.exp * 1000 <= Date.now() + 5000;
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Safely clear stored session tokens and notify the app of session expiration.
+ */
+export function clearSession() {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('user');
+  window.dispatchEvent(
+    new CustomEvent('legalease:session-expired', {
+      detail: { message: 'Session expired. Please log in again.' },
+    })
+  );
+}
 
 function getToken() {
   return localStorage.getItem('access_token');
@@ -43,7 +82,11 @@ async function apiFetch(path, options = {}, requiresAuth = true) {
 
   if (requiresAuth) {
     const token = getToken();
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (!token || isTokenExpired(token)) {
+      clearSession();
+      throw new Error('Session expired. Please log in again.');
+    }
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
   // Only set Content-Type to JSON when we're sending a plain object body,
@@ -56,6 +99,16 @@ async function apiFetch(path, options = {}, requiresAuth = true) {
     ...options,
     headers,
   });
+
+  if (response.status === 401) {
+    clearSession();
+    throw new Error('Session expired. Please log in again.');
+  }
+
+  if (response.status === 403) {
+    const err = await parseError(response);
+    throw new Error(err.message || 'Access denied. You do not have permission to view or modify this resource.');
+  }
 
   if (!response.ok) {
     throw await parseError(response);
@@ -142,14 +195,28 @@ export async function getDocument(documentId) {
  * @returns {Promise<Blob>}
  */
 export async function getAudioSummary(documentId) {
-  const headers = {};
   const token = getToken();
-  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (!token || isTokenExpired(token)) {
+    clearSession();
+    throw new Error('Session expired. Please log in again.');
+  }
+
+  const headers = { Authorization: `Bearer ${token}` };
 
   const response = await fetch(`${BASE_URL}/documents/${documentId}/audio-summary`, {
     method: 'GET',
     headers,
   });
+
+  if (response.status === 401) {
+    clearSession();
+    throw new Error('Session expired. Please log in again.');
+  }
+
+  if (response.status === 403) {
+    const err = await parseError(response);
+    throw new Error(err.message || 'Access denied. You do not have permission to listen to this document summary.');
+  }
 
   if (!response.ok) {
     throw await parseError(response);

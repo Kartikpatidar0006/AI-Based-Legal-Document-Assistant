@@ -53,11 +53,22 @@ DEPENDENCIES
 """
 
 import argparse
+import hashlib
 import json
+import logging
 import re
 import sys
 import time
 from pathlib import Path
+
+from gtts import gTTS
+
+# Configure logger
+logger = logging.getLogger(__name__)
+
+# Audio cache directory for voice walkthroughs
+AUDIO_CACHE_DIR = Path(__file__).resolve().parent / "audio_cache"
+AUDIO_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Force UTF-8 output so emoji print correctly on Windows (cp1252 terminal)
 sys.stdout.reconfigure(encoding="utf-8")
@@ -85,7 +96,7 @@ from document_ingest import extract_text
 
 # Documents under this character count are processed in a single Gemini call.
 # Longer documents use map-reduce (section summarise → combine).
-SINGLE_PASS_CHAR_LIMIT: int = 15_000
+SINGLE_PASS_CHAR_LIMIT: int = 30_000
 
 # Section size when splitting long documents for map-reduce summarisation.
 # Kept larger than the RAG chunk size (700 chars) because we want coherent
@@ -358,6 +369,107 @@ def summarize_document(document_text: str, filename: str) -> dict:
             "model":              GEMINI_MODEL,
             "_parse_warning":     err,
         }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1B. AUDIO SUMMARY GENERATION (Google Text-to-Speech)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _clean_text_for_speech(text: str) -> str:
+    """
+    Clean markdown symbols, headings, bullets, list prefixes, and normalize whitespace
+    so that text-to-speech reads the legal summary naturally without reciting formatting symbols.
+    """
+    if not text:
+        return ""
+
+    # Replace markdown headings (e.g. ### 1. Parties Involved) with text followed by period
+    cleaned = re.sub(r'^[ \t]*#{1,6}\s*(.+?)[ \t]*$', r'\1.', text, flags=re.MULTILINE)
+
+    # Remove bold / italic markdown markers (**text**, *text*, __text__, _text_)
+    cleaned = re.sub(r'\*\*(.+?)\*\*', r'\1', cleaned)
+    cleaned = re.sub(r'__(.+?)__', r'\1', cleaned)
+    cleaned = re.sub(r'\*(.+?)\*', r'\1', cleaned)
+    cleaned = re.sub(r'_(.+?)_', r'\1', cleaned)
+
+    # Remove inline code backticks `code`
+    cleaned = re.sub(r'`(.+?)`', r'\1', cleaned)
+
+    # Remove markdown link syntax [text](url) -> text
+    cleaned = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', cleaned)
+
+    # Remove bullet points (* item, - item, • item)
+    cleaned = re.sub(r'^[ \t]*[\*\-\•]\s+', '', cleaned, flags=re.MULTILINE)
+
+    # Remove numbered list prefixes (1. item or 2) item)
+    cleaned = re.sub(r'^[ \t]*\d+[\.\)]\s+', '', cleaned, flags=re.MULTILINE)
+
+    # Remove blockquote markers (> quote)
+    cleaned = re.sub(r'^[ \t]*>\s*', '', cleaned, flags=re.MULTILINE)
+
+    # Clean colons at ends of headings/sections
+    cleaned = re.sub(r':\s*\n', '.\n', cleaned)
+
+    # Replace currency symbols for natural pronunciation
+    cleaned = cleaned.replace('₹', ' Rupees ').replace('$', ' Dollars ')
+
+    # Collapse multiple consecutive newlines and whitespace
+    cleaned = re.sub(r'\n{2,}', '. ', cleaned)
+    cleaned = re.sub(r'\n', ' ', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+
+    # Clean duplicate periods or spaces before punctuation
+    cleaned = re.sub(r'\.{2,}', '.', cleaned)
+    cleaned = re.sub(r'\s+([,\.!?;:])', r'\1', cleaned)
+
+    return cleaned
+
+
+def generate_audio_summary(summary_text: str, filename_hint: str = "") -> Path:
+    """
+    Generate an MP3 audio file from summary text using Google Text-to-Speech (gTTS).
+    Caches audio by SHA-256 hash of cleaned summary text.
+
+    Args:
+        summary_text: Raw or formatted summary text.
+        filename_hint: Optional document filename for logging context.
+
+    Returns:
+        pathlib.Path to the generated or cached .mp3 file.
+    """
+    if not summary_text or not summary_text.strip():
+        raise ValueError("Summary text cannot be empty.")
+
+    clean_text = _clean_text_for_speech(summary_text)
+    if not clean_text:
+        clean_text = "No summary content available for this document."
+
+    AUDIO_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Deterministic SHA-256 hash of cleaned summary text
+    text_hash = hashlib.sha256(clean_text.encode("utf-8")).hexdigest()
+    audio_path = AUDIO_CACHE_DIR / f"summary_{text_hash}.mp3"
+
+    # Reuse cached file if it already exists and is non-empty
+    if audio_path.exists() and audio_path.stat().st_size > 0:
+        logger.info(f"Audio summary cache hit: {audio_path.name} (for '{filename_hint}')")
+        return audio_path
+
+    logger.info(f"Generating audio summary via gTTS: {audio_path.name} (for '{filename_hint}')")
+
+    try:
+        tts = gTTS(text=clean_text, lang='en', slow=False)
+        tts.save(str(audio_path))
+    except Exception as exc:
+        logger.error(f"gTTS audio generation failed: {exc}", exc_info=True)
+        try:
+            if audio_path.exists():
+                audio_path.unlink()
+        except OSError:
+            pass
+        raise RuntimeError(f"Failed to generate audio summary: {exc}") from exc
+
+    return audio_path
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -718,8 +830,23 @@ def detect_risks(
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 4. COMBINED ANALYSIS
+# PIPELINE METRICS  (explicit, per-call counter — no global mutation)
 # ─────────────────────────────────────────────────────────────────────────────
+
+class _PipelineMetrics:
+    """
+    Lightweight metrics collector for a single full_document_analysis() run.
+    Instantiated fresh for every call so concurrent requests never share state.
+    Replaces the previous approach of monkey-patching module globals.
+    """
+    __slots__ = ("gemini_calls", "t_clauses", "t_summary", "t_risks")
+
+    def __init__(self) -> None:
+        self.gemini_calls: int   = 0
+        self.t_clauses:    float = 0.0
+        self.t_summary:    float = 0.0
+        self.t_risks:      float = 0.0
+
 
 def full_document_analysis(
     document_text: str,
@@ -735,34 +862,50 @@ def full_document_analysis(
       2. summarize_document()
       3. detect_risks()      — receives precomputed clauses from step 1.
 
-    This is the function to wire into the FastAPI /analyze endpoint:
-
-        from document_processor import full_document_analysis
-
-        @app.post("/documents/{doc_id}/analyze")
-        async def analyze(doc_id: str):
-            text = get_text_from_db(doc_id)
-            return full_document_analysis(text, filename, document_type)
+    Gemini call counting uses an explicit _PipelineMetrics object rather than
+    module-level monkey-patching, so concurrent requests are fully isolated.
 
     Returns:
         {
-            "filename":      str,
+            "filename":        str,
             "summary_result":  dict,   # from summarize_document()
             "clause_result":   dict,   # from extract_clauses()
             "risk_result":     dict,   # from detect_risks()
         }
     """
+    metrics = _PipelineMetrics()
+    t_pipeline_start = time.perf_counter()
+
     print(f"\n{'='*65}")
     print(f"  FULL DOCUMENT ANALYSIS: {filename}")
+    print(f"  char_count={len(document_text):,} | single_pass_limit={SINGLE_PASS_CHAR_LIMIT:,}")
     print(f"{'='*65}")
 
-    # Step 1: Extract clauses first (reused by risk detection)
+    # ── Step 1: Extract clauses (reused by risk detection) ────────────────────
+    t0 = time.perf_counter()
     clause_result = extract_clauses(document_text, filename)
+    metrics.t_clauses = time.perf_counter() - t0
+    metrics.gemini_calls += 1   # extract_clauses always makes exactly 1 Gemini call
+    logger.info(
+        "[PERF] extract_clauses: %.2fs | clauses_found=%d | gemini_calls_so_far=%d",
+        metrics.t_clauses, clause_result.get("total_clauses_found", 0), metrics.gemini_calls,
+    )
 
-    # Step 2: Summarise
+    # ── Step 2: Summarise ─────────────────────────────────────────────────────
+    t0 = time.perf_counter()
     summary_result = summarize_document(document_text, filename)
+    metrics.t_summary = time.perf_counter() - t0
+    method   = summary_result.get("method", "unknown")
+    sections = summary_result.get("sections_processed", 1)
+    # single-pass = 1 Gemini call; map-reduce = N section calls + 1 combine call
+    metrics.gemini_calls += 1 if method == "single-pass" else (sections + 1)
+    logger.info(
+        "[PERF] summarize_document: %.2fs | method=%s | sections=%d | gemini_calls_so_far=%d",
+        metrics.t_summary, method, sections, metrics.gemini_calls,
+    )
 
-    # Step 3: Risk detection — pass pre-extracted clauses to avoid redundant work
+    # ── Step 3: Risk detection ────────────────────────────────────────────────
+    t0 = time.perf_counter()
     precomputed = clause_result.get("clauses") if clause_result.get("parse_success") else None
     risk_result = detect_risks(
         document_text,
@@ -770,19 +913,40 @@ def full_document_analysis(
         document_type=document_type,
         _precomputed_clauses=precomputed,
     )
+    metrics.t_risks = time.perf_counter() - t0
+    metrics.gemini_calls += 1   # detect_risks always makes exactly 1 Gemini call
+    logger.info(
+        "[PERF] detect_risks: %.2fs | issues_found=%d | gemini_calls_so_far=%d",
+        metrics.t_risks, risk_result.get("total_issues_found", 0), metrics.gemini_calls,
+    )
 
-    print(f"\n✅ Analysis complete for '{filename}'")
+    t_total = time.perf_counter() - t_pipeline_start
+
+    # ── Summary report ────────────────────────────────────────────────────────
+    print(f"\n  Analysis complete for '{filename}'")
     print(f"   Clauses found  : {clause_result.get('total_clauses_found', '?')}")
     print(f"   Issues flagged : {risk_result.get('total_issues_found', '?')}")
     print(f"   Overall risk   : {risk_result.get('overall_risk_score', '?')}")
+    print(
+        f"  [PERF] Total: {t_total:.2f}s  "
+        f"(clauses={metrics.t_clauses:.2f}s, summary={metrics.t_summary:.2f}s, "
+        f"risks={metrics.t_risks:.2f}s) | Gemini calls: {metrics.gemini_calls}"
+    )
     print(f"{'='*65}\n")
+    logger.info(
+        "[PERF] pipeline TOTAL: %.2fs | clauses=%.2fs | summary=%.2fs "
+        "| risks=%.2fs | gemini_call_count=%d | file=%s",
+        t_total, metrics.t_clauses, metrics.t_summary, metrics.t_risks,
+        metrics.gemini_calls, filename,
+    )
 
     return {
-        "filename":      filename,
+        "filename":       filename,
         "summary_result": summary_result,
         "clause_result":  clause_result,
         "risk_result":    risk_result,
     }
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────

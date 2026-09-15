@@ -164,7 +164,20 @@ export default function UploadDocument({ onClose, onComplete, hint = '' }) {
         {/* ── Upload form (only shown when idle) ─────────────────────────── */}
         {phase === 'idle' && (
           <form id="upload-form" className="upload-form" onSubmit={handleSubmit}>
-            {error && <div className="form-error" role="alert">{error}</div>}
+            {error && (
+              <div className="form-error" role="alert" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <span>{error}</span>
+                {error.includes('Session expired') && (
+                  <a
+                    href="/login"
+                    className="btn btn--sm btn--primary"
+                    style={{ alignSelf: 'flex-start', textDecoration: 'none' }}
+                  >
+                    Go to Login
+                  </a>
+                )}
+              </div>
+            )}
 
             {/* Drop zone */}
             <div

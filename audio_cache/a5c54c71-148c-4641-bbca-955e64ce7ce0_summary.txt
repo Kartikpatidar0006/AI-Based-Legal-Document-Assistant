@@ -1,0 +1,1 @@
+❌ Gemini rate limit exceeded after retries. You are on the free tier — please wait 1 minute and try again.
