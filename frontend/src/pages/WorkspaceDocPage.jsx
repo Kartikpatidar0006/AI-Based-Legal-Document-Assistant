@@ -15,7 +15,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getDocument, analyzeDocument, askQuery } from '../api';
+import { getDocument, analyzeDocument, askQuery, askDocumentQuestion } from '../api';
 import RiskBadge from '../components/common/RiskBadge';
 import SourceChip from '../components/common/SourceChip';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -23,12 +23,6 @@ import AudioWalkthrough from '../components/common/AudioWalkthrough';
 
 /* ── Constants ──────────────────────────────────────────────────────────────── */
 const TABS = ['Summary', 'Clauses', 'Risk Analysis'];
-
-const CATEGORY_OPTIONS = [
-  { value: '',                label: 'All' },
-  { value: 'templates',       label: 'Templates' },
-  { value: 'compliance_docs', label: 'Compliance' },
-];
 
 /* ── Analysis sub-sections ──────────────────────────────────────────────────── */
 function SummarySection({ summaryResult, documentId }) {
@@ -152,10 +146,9 @@ function RiskSection({ riskResult }) {
 }
 
 /* ── Q&A Panel ──────────────────────────────────────────────────────────────── */
-function QAPanel({ doc }) {
+function QAPanel({ doc, className = '' }) {
   const [history, setHistory]   = useState([]);
   const [question, setQuestion] = useState('');
-  const [category, setCategory] = useState('');
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState('');
   const bottomRef = useRef(null);
@@ -182,22 +175,43 @@ function QAPanel({ doc }) {
   })();
 
   async function handleSubmit(e) {
-    e.preventDefault();
+    e?.preventDefault();
     const q = question.trim();
     if (!q || loading) return;
 
     setLoading(true);
     setError('');
-    const optimisticEntry = { question: q, answer: null, sources: [], chunks_used: null };
+    const optimisticEntry = { question: q, answer: null, sources: [], chunks_used: null, isDocQA: !!doc?.id };
     setHistory((prev) => [...prev, optimisticEntry]);
     setQuestion('');
 
     try {
-      const result = await askQuery(q, category || null);
-      setHistory((prev) => [
-        ...prev.slice(0, -1),
-        { question: q, answer: result.answer, sources: result.sources || [], chunks_used: result.chunks_used },
-      ]);
+      if (doc?.id) {
+        const priorTurns = history.filter((h) => h.answer);
+        const result = await askDocumentQuestion(doc.id, q, priorTurns);
+        setHistory((prev) => [
+          ...prev.slice(0, -1),
+          {
+            question: q,
+            answer: result.answer,
+            filename: result.filename || doc.filename,
+            disclaimer: result.disclaimer,
+            isDocQA: true,
+          },
+        ]);
+      } else {
+        const result = await askQuery(q, null);
+        setHistory((prev) => [
+          ...prev.slice(0, -1),
+          {
+            question: q,
+            answer: result.answer,
+            sources: result.sources || [],
+            chunks_used: result.chunks_used,
+            isDocQA: false,
+          },
+        ]);
+      }
     } catch (err) {
       setHistory((prev) => prev.slice(0, -1));
       setError(err.message || 'Failed to get an answer. Please try again.');
@@ -225,7 +239,7 @@ function QAPanel({ doc }) {
   }
 
   return (
-    <aside className="qa-panel" aria-label="Ask a question about this document">
+    <aside className={`qa-panel ${className}`.trim()} aria-label="Ask a question about this document">
       {/* Header */}
       <div className="qa-panel__header">
         <div className="qa-panel__title">
@@ -243,19 +257,12 @@ function QAPanel({ doc }) {
         )}
       </div>
 
-      {/* Category filter pills */}
-      <div className="qa-category-row" role="group" aria-label="Filter by category">
-        {CATEGORY_OPTIONS.map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            className={`qa-category-pill${category === opt.value ? ' qa-category-pill--active' : ''}`}
-            onClick={() => setCategory(opt.value)}
-            aria-pressed={category === opt.value}
-          >
-            {opt.label}
-          </button>
-        ))}
+      {/* Document scope indicator */}
+      <div className="qa-doc-scope-bar">
+        <span className="qa-doc-scope-tag">Contract Scope</span>
+        <span className="qa-doc-scope-filename" title={doc?.filename || 'Active Document'}>
+          📄 {doc?.filename || 'Document Text'}
+        </span>
       </div>
 
       {/* Chat history */}
@@ -269,9 +276,9 @@ function QAPanel({ doc }) {
         {history.length === 0 && !loading && (
           <div className="qa-empty">
             <div className="qa-empty__icon" aria-hidden="true">💬</div>
-            <p className="qa-empty__heading">Ask about this document</p>
+            <p className="qa-empty__heading">Ask about this contract</p>
             <p className="qa-empty__sub">
-              Get grounded answers drawn from the knowledge base. Try one of these:
+              Questions are answered directly from <strong>{doc?.filename || 'this document'}</strong>. Try one of these:
             </p>
             <div className="qa-empty__suggestions">
               {suggestions.map((s, i) => (
@@ -305,15 +312,20 @@ function QAPanel({ doc }) {
                 <span className="qa-message__sender">
                   <span className="qa-message__sender-logo" aria-hidden="true">⚖</span>
                   LegalEase AI
-                  {item.chunks_used != null && (
+                  {item.isDocQA ? (
+                    <span className="qa-chunks-tag qa-chunks-tag--doc">
+                      Document Grounded
+                    </span>
+                  ) : item.chunks_used != null ? (
                     <span className="qa-chunks-tag">
                       {item.chunks_used} passage{item.chunks_used !== 1 ? 's' : ''}
                     </span>
-                  )}
+                  ) : null}
                 </span>
                 <div className="qa-message__bubble">
                   {renderAnswer(item.answer)}
-                  {/* Sources */}
+
+                  {/* Sources for general query fallback */}
                   {item.sources && item.sources.length > 0 && (
                     <div className="qa-sources" style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--panel-border)' }}>
                       <div className="qa-sources__label">Grounded in</div>
@@ -334,6 +346,24 @@ function QAPanel({ doc }) {
                       </div>
                     </div>
                   )}
+
+                  {/* Grounded document indicator for doc QA */}
+                  {item.isDocQA && item.filename && (
+                    <div className="qa-sources" style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--panel-border)' }}>
+                      <div className="qa-sources__label">Source Document</div>
+                      <div className="qa-sources__list">
+                        <div className="qa-source-item">
+                          <span className="qa-source-item__icon" aria-hidden="true">📄</span>
+                          <span className="qa-source-item__name" title={item.filename}>
+                            {item.filename}
+                          </span>
+                          <span className="qa-source-item__score" style={{ background: 'rgba(13, 148, 136, 0.12)', color: 'var(--color-teal)' }}>
+                            100% doc match
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -346,7 +376,7 @@ function QAPanel({ doc }) {
             <div className="qa-loading-dots" aria-hidden="true">
               <span /><span /><span />
             </div>
-            <span className="qa-loading-text">Searching knowledge base…</span>
+            <span className="qa-loading-text">Analyzing {doc?.filename || 'document'} text…</span>
           </div>
         )}
 
@@ -407,6 +437,8 @@ export default function WorkspaceDocPage() {
   const [activeTab, setActiveTab]   = useState('Summary');
   const [analyzing, setAnalyzing]   = useState(false);
   const [analyzeError, setAnalyzeError] = useState('');
+  const [mobilePane, setMobilePane] = useState('analysis'); // 'analysis' | 'qa'
+  const [showQAPanel, setShowQAPanel] = useState(true);
 
   const loadDoc = useCallback(async () => {
     setLoading(true);
@@ -493,7 +525,7 @@ export default function WorkspaceDocPage() {
   const showRepairPrompt = !hasAnalysis && doc?.status === 'ready';
 
   return (
-    <div className="workspace-doc">
+    <div className={`workspace-doc${!showQAPanel ? ' workspace-doc--full' : ''}`}>
       {/* ── Header bar (full width) ────────────────────────────────────── */}
       <header className="doc-header-bar">
         <button
@@ -517,15 +549,51 @@ export default function WorkspaceDocPage() {
           )}
         </div>
 
+        {/* Mobile / Narrow screen pane switch tabs (≤ 900px) */}
+        <div className="doc-pane-tabs" role="tablist" aria-label="Switch between document and Q&A">
+          <button
+            type="button"
+            className={`doc-pane-tab ${mobilePane === 'analysis' ? 'doc-pane-tab--active' : ''}`}
+            onClick={() => setMobilePane('analysis')}
+            aria-selected={mobilePane === 'analysis'}
+          >
+            📄 Analysis
+          </button>
+          <button
+            type="button"
+            className={`doc-pane-tab ${mobilePane === 'qa' ? 'doc-pane-tab--active' : ''}`}
+            onClick={() => setMobilePane('qa')}
+            aria-selected={mobilePane === 'qa'}
+          >
+            ⚖ Ask Q&A
+          </button>
+        </div>
+
         <div className="doc-header-bar__actions">
           {doc?.risk_result?.overall_risk_score && (
             <RiskBadge level={doc.risk_result.overall_risk_score} />
           )}
+
+          {/* Desktop Q&A panel toggle button */}
+          <button
+            type="button"
+            className={`doc-qa-toggle-btn ${showQAPanel ? 'doc-qa-toggle-btn--active' : ''}`}
+            onClick={() => setShowQAPanel((v) => !v)}
+            title={showQAPanel ? 'Hide Q&A sidebar' : 'Show Q&A sidebar'}
+            aria-label={showQAPanel ? 'Hide Q&A sidebar' : 'Show Q&A sidebar'}
+          >
+            <span aria-hidden="true">💬</span>
+            <span className="doc-qa-toggle-text">{showQAPanel ? 'Hide Q&A' : 'Ask Q&A'}</span>
+          </button>
         </div>
       </header>
 
       {/* ── Left: Analysis panel ──────────────────────────────────────── */}
-      <main className="analysis-panel" id="analysis-panel" aria-label="Document analysis">
+      <main
+        className={`analysis-panel ${mobilePane !== 'analysis' ? 'analysis-panel--mobile-hidden' : ''}`}
+        id="analysis-panel"
+        aria-label="Document analysis"
+      >
 
         {/* Not-yet-analyzed — only shown for pending/error docs with no cached data */}
         {showAnalyzePrompt && (
@@ -609,7 +677,12 @@ export default function WorkspaceDocPage() {
       </main>
 
       {/* ── Right: Q&A chat panel ─────────────────────────────────────── */}
-      <QAPanel doc={doc} />
+      {showQAPanel && (
+        <QAPanel
+          doc={doc}
+          className={mobilePane !== 'qa' ? 'qa-panel--mobile-hidden' : ''}
+        />
+      )}
     </div>
   );
 }

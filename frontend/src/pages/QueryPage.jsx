@@ -14,7 +14,7 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { askQuery } from '../api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
@@ -105,6 +105,12 @@ export default function QueryPage() {
             Grounded answers drawn from a curated knowledge base of Indian business law,
             contracts, and compliance documents — with source citations on every response.
           </p>
+          <div className="query-scope-note">
+            <span className="query-scope-note__icon" aria-hidden="true">💡</span>
+            <span>
+              Searching the <strong>general legal knowledge base</strong>. To ask questions about a specific contract or file you uploaded, open it in <Link to="/documents">Documents</Link> or the <Link to="/workspace">Workspace</Link>.
+            </span>
+          </div>
         </div>
       </div>
 

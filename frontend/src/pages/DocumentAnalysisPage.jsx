@@ -11,9 +11,9 @@
  * prompt to trigger analysis from here too.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getDocument, analyzeDocument } from '../api';
+import { getDocument, analyzeDocument, askDocumentQuestion } from '../api';
 import RiskBadge from '../components/common/RiskBadge';
 import SourceChip from '../components/common/SourceChip';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -164,6 +164,166 @@ function RiskSection({ riskResult }) {
   );
 }
 
+function DocumentQASession({ documentId, filename }) {
+  const [history, setHistory]     = useState([]); // [{ question, answer, disclaimer }]
+  const [question, setQuestion]   = useState('');
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState('');
+  const bottomRef                 = useRef(null);
+  const textareaRef               = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [history, loading]);
+
+  const quickQuestions = [
+    "What are the key risks in this document?",
+    "Does this contract have a non-compete clause?",
+    "Summarize the termination terms in this agreement",
+  ];
+
+  async function handleSubmit(e) {
+    if (e) e.preventDefault();
+    const q = question.trim();
+    if (!q || loading) return;
+
+    setLoading(true);
+    setError('');
+    const optimisticTurn = { question: q, answer: null };
+    setHistory((prev) => [...prev, optimisticTurn]);
+    setQuestion('');
+
+    try {
+      const res = await askDocumentQuestion(documentId, q, history);
+      setHistory((prev) => [
+        ...prev.slice(0, -1),
+        { question: q, answer: res.answer, disclaimer: res.disclaimer },
+      ]);
+    } catch (err) {
+      setHistory((prev) => prev.slice(0, -1));
+      setError(err.message || 'Failed to get answer. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  }
+
+  return (
+    <section className="doc-qa-section" aria-label={`Ask questions about ${filename}`}>
+      <div className="doc-qa-section__header">
+        <div>
+          <h3 className="doc-qa-section__title">
+            <span className="doc-qa-section__icon" aria-hidden="true">💬</span>
+            Ask About This Document
+          </h3>
+          <p className="doc-qa-section__subtitle">
+            Ask specific questions grounded exclusively in <strong>{filename}</strong>.
+          </p>
+        </div>
+        {history.length > 0 && (
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm"
+            onClick={() => { setHistory([]); setError(''); }}
+          >
+            Clear chat
+          </button>
+        )}
+      </div>
+
+      {history.length === 0 && !loading && (
+        <div className="doc-qa-suggestions">
+          <p className="doc-qa-suggestions__title">Suggested questions:</p>
+          <div className="doc-qa-suggestions__grid">
+            {quickQuestions.map((prompt, i) => (
+              <button
+                key={i}
+                type="button"
+                className="doc-qa-suggestion-btn"
+                onClick={() => {
+                  setQuestion(prompt);
+                  textareaRef.current?.focus();
+                }}
+              >
+                <span>{prompt}</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* History turns */}
+      {history.length > 0 && (
+        <div className="doc-qa-thread" role="log" aria-live="polite">
+          {history.map((turn, i) => (
+            <div key={i} className="doc-qa-turn">
+              <div className="doc-qa-turn__q">
+                <span className="doc-qa-turn__label">You</span>
+                <p className="doc-qa-turn__q-text">{turn.question}</p>
+              </div>
+              {turn.answer !== null && (
+                <div className="doc-qa-turn__a">
+                  <span className="doc-qa-turn__label doc-qa-turn__label--ai">
+                    <span aria-hidden="true">⚖</span> LegalEase AI
+                  </span>
+                  <div className="doc-qa-turn__a-text">
+                    {(turn.answer || '').split('\n').filter((l) => l.trim()).map((line, j) => (
+                      <p key={j}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+          {loading && (
+            <div className="doc-qa-loading">
+              <LoadingSpinner label={`Searching ${filename}…`} />
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+      )}
+
+      {error && <div className="form-error" role="alert">{error}</div>}
+
+      {/* Composer */}
+      <form className="doc-qa-composer" onSubmit={handleSubmit}>
+        <label htmlFor="doc-qa-input" className="sr-only">Ask a question about this document</label>
+        <textarea
+          id="doc-qa-input"
+          ref={textareaRef}
+          className="doc-qa-textarea"
+          rows={2}
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={`Ask about clauses, risks, or terms in ${filename}… (Enter to send, Shift+Enter for new line)`}
+          disabled={loading}
+        />
+        <button
+          type="submit"
+          className="btn btn--primary doc-qa-send-btn"
+          disabled={loading || !question.trim()}
+          aria-label="Send question"
+        >
+          Ask
+        </button>
+      </form>
+
+      <p className="doc-qa-disclaimer">
+        Answers are generated based solely on this document's text. This is general information, not legal advice.
+      </p>
+    </section>
+  );
+}
+
 // ── Main page ────────────────────────────────────────────────────────────────
 
 export default function DocumentAnalysisPage() {
@@ -305,6 +465,9 @@ export default function DocumentAnalysisPage() {
             {activeTab === 'Clauses'      && <ClausesSection clauseResult={doc?.clause_result} />}
             {activeTab === 'Risk Analysis' && <RiskSection   riskResult={doc?.risk_result} />}
           </div>
+
+          {/* ── Scoped Document Q&A Section ─────────────────────────────── */}
+          <DocumentQASession documentId={id || doc?.id} filename={doc?.filename} />
         </>
       )}
     </div>

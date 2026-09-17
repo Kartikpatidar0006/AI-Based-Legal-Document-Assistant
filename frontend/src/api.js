@@ -240,3 +240,24 @@ export async function askQuery(question, categoryFilter = null) {
     body: JSON.stringify({ question, category_filter: categoryFilter }),
   });
 }
+
+/**
+ * Ask a question grounded exclusively in a specific uploaded document.
+ * @param {string} documentId
+ * @param {string} question
+ * @param {Array<{question: string, answer: string}>} chatHistory — optional recent turns for follow-ups
+ * @returns {Promise<{ question: string, answer: string, filename: string, disclaimer: string }>}
+ */
+export async function askDocumentQuestion(documentId, question, chatHistory = []) {
+  return apiFetch(`/documents/${documentId}/ask`, {
+    method: 'POST',
+    body: JSON.stringify({
+      question,
+      chat_history: chatHistory.map((h) => ({
+        question: h.question,
+        answer: h.answer || '',
+      })),
+    }),
+  });
+}
+
