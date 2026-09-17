@@ -125,6 +125,26 @@ class AnalyzeResponse(BaseModel):
     risks_persisted: int  # number of rows inserted into risk_flags
 
 
+class ChatTurn(BaseModel):
+    """Single turn of question-answer for conversational context."""
+    question: str = Field(..., min_length=1)
+    answer:   str = Field(..., min_length=1)
+
+
+class DocumentAskRequest(BaseModel):
+    """Request body for POST /documents/{id}/ask"""
+    question:     str = Field(..., min_length=2, examples=["What are the key risks in this document?"])
+    chat_history: list[ChatTurn] | None = Field(default=None, description="Optional recent Q&A turns for context")
+
+
+class DocumentAskResponse(BaseModel):
+    """Response for POST /documents/{id}/ask"""
+    question:   str
+    answer:     str
+    filename:   str
+    disclaimer: str
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # QUERY (General KB Q&A)
 # ─────────────────────────────────────────────────────────────────────────────

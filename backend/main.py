@@ -1,6 +1,6 @@
 """
 backend/main.py
-AI-Based Legal Document Assistant for Small Businesses
+# AI-Based Legal Document Assistant for Small Businesses
 
 FastAPI application entry point.
 
