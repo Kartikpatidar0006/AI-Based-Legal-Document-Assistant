@@ -111,6 +111,14 @@ class DocumentDetailResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class DocumentTextResponse(BaseModel):
+    """GET /documents/{id}/text — raw extracted text for client-side highlighting."""
+    id:         uuid.UUID
+    filename:   str
+    text:       str
+    char_count: int
+
+
 class AnalyzeResponse(BaseModel):
     """
     POST /documents/{id}/analyze — full analysis result.

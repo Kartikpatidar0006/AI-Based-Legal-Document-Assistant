@@ -189,6 +189,15 @@ export async function getDocument(documentId) {
 }
 
 /**
+ * Get the raw extracted text of a document for client-side highlighting.
+ * Returns { id, filename, text, char_count }
+ * @param {string} documentId
+ */
+export async function getDocumentText(documentId) {
+  return apiFetch(`/documents/${documentId}/text`);
+}
+
+/**
  * Fetch the AI-generated audio summary as an audio Blob.
  * Handles binary audio/mpeg response differently from JSON endpoints.
  * @param {string} documentId

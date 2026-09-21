@@ -2390,3 +2390,143 @@ h4, h5, h6 {
   line-height: 1.5;
   opacity: 0.8;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DOCUMENT VIEW — Highlighted text viewer
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.doc-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-4) 0;
+}
+
+/* ── Legend bar ──────────────────────────────────────────────────────────── */
+.doc-view-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+}
+
+.doc-view-legend__title {
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-right: var(--sp-2);
+}
+
+.doc-view-legend__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.doc-view-legend__swatch {
+  display: inline-block;
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.doc-view-legend__swatch--risk {
+  background: #FFD700;
+  border: 1px solid rgba(180, 130, 0, 0.4);
+  box-shadow: 0 0 4px rgba(255, 215, 0, 0.5);
+}
+
+.doc-view-legend__swatch--clause {
+  background: rgba(13, 148, 136, 0.22);
+  border: 1px solid rgba(13, 148, 136, 0.45);
+}
+
+.doc-view-legend__hint {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+/* ── Document text container ─────────────────────────────────────────────── */
+.doc-view-text {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6) var(--sp-7);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 0.9rem;
+  line-height: 1.9;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 65vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--panel-border) transparent;
+}
+
+.doc-view-text::-webkit-scrollbar {
+  width: 6px;
+}
+
+.doc-view-text::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.doc-view-text::-webkit-scrollbar-thumb {
+  background: var(--panel-border);
+  border-radius: 3px;
+}
+
+/* ── Highlight marks ─────────────────────────────────────────────────────── */
+.doc-highlight {
+  border-radius: 2px;
+  padding: 1px 2px;
+  cursor: help;
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
+  /* Override browser default <mark> yellow */
+  background: transparent;
+  color: inherit;
+}
+
+/* 🟡 Risk highlight — bright yellow with warm glow */
+.doc-highlight--risk {
+  background: rgba(255, 215, 0, 0.65);
+  border-bottom: 2px solid #E6A800;
+  color: #1a1200;
+}
+
+.doc-highlight--risk:hover {
+  background: rgba(255, 215, 0, 0.90);
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.4), 0 2px 8px rgba(230, 168, 0, 0.35);
+  filter: brightness(1.05);
+}
+
+/* 🔵 Clause highlight — soft teal */
+.doc-highlight--clause {
+  background: rgba(13, 148, 136, 0.18);
+  border-bottom: 2px solid rgba(13, 148, 136, 0.55);
+  color: inherit;
+}
+
+.doc-highlight--clause:hover {
+  background: rgba(13, 148, 136, 0.32);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
+}
+
+/* ── Loading state ───────────────────────────────────────────────────────── */
+.doc-view-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-12) 0;
+  color: var(--text-muted);
+}

@@ -457,8 +457,22 @@ def generate_audio_summary(summary_text: str, filename_hint: str = "") -> Path:
 
     logger.info(f"Generating audio summary via gTTS: {audio_path.name} (for '{filename_hint}')")
 
+    # Trim to ~300 chars so audio finishes in 21-25 seconds at normal TTS speed.
+    # gTTS normal speed ≈ 12-13 chars/sec → 300 chars ≈ 23 seconds
+    AUDIO_CHAR_LIMIT = 300
+    trimmed = clean_text[:AUDIO_CHAR_LIMIT]
+    if len(clean_text) > AUDIO_CHAR_LIMIT:
+        last_space = trimmed.rfind(' ')
+        if last_space > 50:
+            trimmed = trimmed[:last_space]
+
+    # Prepend a natural intro for cleaner audio flow
+    speech_text = "Summary of your legal document. " + trimmed
+
     try:
-        tts = gTTS(text=clean_text, lang='en', slow=False)
+        # lang='en', tld='co.in' → Indian English accent on Google TTS servers
+        # slow=False → natural pace, audio stays within 21-25 seconds
+        tts = gTTS(text=speech_text, lang='en', tld='co.in', slow=False)
         tts.save(str(audio_path))
     except Exception as exc:
         logger.error(f"gTTS audio generation failed: {exc}", exc_info=True)

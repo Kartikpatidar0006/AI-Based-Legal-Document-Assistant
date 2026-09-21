@@ -15,14 +15,14 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getDocument, analyzeDocument, askQuery, askDocumentQuestion } from '../api';
+import { getDocument, analyzeDocument, askQuery, askDocumentQuestion, getDocumentText } from '../api';
 import RiskBadge from '../components/common/RiskBadge';
 import SourceChip from '../components/common/SourceChip';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import AudioWalkthrough from '../components/common/AudioWalkthrough';
 
 /* ── Constants ──────────────────────────────────────────────────────────────── */
-const TABS = ['Summary', 'Clauses', 'Risk Analysis'];
+const TABS = ['Summary', 'Clauses', 'Risk Analysis', 'Document View'];
 
 /* ── Analysis sub-sections ──────────────────────────────────────────────────── */
 function SummarySection({ summaryResult, documentId }) {
@@ -141,6 +141,237 @@ function RiskSection({ riskResult }) {
       )}
 
       {disclaimer && <p className="analysis-disclaimer">{disclaimer}</p>}
+    </div>
+  );
+}
+
+/* ── Document View with Highlighting ───────────────────────────────────── */
+
+/**
+ * Robust text finder: tries exact → case-insensitive → whitespace-normalized match.
+ * Returns array of {start, end} intervals found in docText.
+ */
+function findTextIntervals(docText, searchText) {
+  if (!searchText || searchText.length < 10) return [];
+  const results = [];
+
+  // ── Tier 1: Exact substring match ────────────────────────────────────────
+  let pos = 0;
+  while (pos < docText.length) {
+    const idx = docText.indexOf(searchText, pos);
+    if (idx === -1) break;
+    results.push({ start: idx, end: idx + searchText.length });
+    pos = idx + searchText.length;
+  }
+  if (results.length > 0) return results;
+
+  // ── Tier 2: Case-insensitive match ────────────────────────────────────────
+  const lowerDoc    = docText.toLowerCase();
+  const lowerSearch = searchText.toLowerCase();
+  pos = 0;
+  while (pos < lowerDoc.length) {
+    const idx = lowerDoc.indexOf(lowerSearch, pos);
+    if (idx === -1) break;
+    results.push({ start: idx, end: idx + lowerSearch.length });
+    pos = idx + lowerSearch.length;
+  }
+  if (results.length > 0) return results;
+
+  // ── Tier 3: Whitespace-normalized match ───────────────────────────────────
+  // Build a map: normPos → originalPos, and a normalized string
+  const origPos = [];      // origPos[normIdx] = index in docText
+  let normStr = '';
+  let prevWasWS = false;
+  for (let i = 0; i < docText.length; i++) {
+    const ch = docText[i];
+    if (/\s/.test(ch)) {
+      if (!prevWasWS) { origPos.push(i); normStr += ' '; }
+      prevWasWS = true;
+    } else {
+      origPos.push(i);
+      normStr += ch.toLowerCase();
+      prevWasWS = false;
+    }
+  }
+  const normSearch = searchText.toLowerCase().replace(/\s+/g, ' ').trim();
+  pos = 0;
+  while (pos < normStr.length) {
+    const idx = normStr.indexOf(normSearch, pos);
+    if (idx === -1) break;
+    const endNorm = idx + normSearch.length - 1;
+    if (endNorm < origPos.length) {
+      results.push({ start: origPos[idx], end: origPos[endNorm] + 1 });
+    }
+    pos = idx + normSearch.length;
+  }
+  if (results.length > 0) return results;
+
+  // ── Tier 4: Try matching longest meaningful sentence from the clause text ─
+  // Split clause into sentences, try each sentence (≥ 30 chars) individually
+  const sentences = searchText
+    .split(/[.;]\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 30);
+  for (const sentence of sentences) {
+    const sentNorm = sentence.toLowerCase().replace(/\s+/g, ' ').trim();
+    pos = 0;
+    while (pos < normStr.length) {
+      const idx = normStr.indexOf(sentNorm, pos);
+      if (idx === -1) break;
+      const endNorm = idx + sentNorm.length - 1;
+      if (endNorm < origPos.length) {
+        results.push({ start: origPos[idx], end: origPos[endNorm] + 1 });
+      }
+      pos = idx + sentNorm.length;
+    }
+    if (results.length > 0) return results;
+  }
+
+  return results;
+}
+
+/**
+ * Build text segments with highlight type metadata.
+ * Returns: [{ text: string, type: 'normal' | 'clause' | 'risk' }]
+ * Yellow (risk) always overrides teal (clause) when both overlap.
+ */
+function buildHighlightSegments(docText, clauses = [], riskIssues = []) {
+  if (!docText) return [{ text: docText || '', type: 'normal' }];
+
+  // Build a set of clause_types flagged as risks (case-insensitive)
+  const riskClauseTypes = new Set(
+    (riskIssues || []).map((r) => (r.clause_type || '').toLowerCase())
+  );
+
+  // Build interval map: position → highlight level (0=none, 1=clause, 2=risk)
+  const n = docText.length;
+  const highlightMap = new Uint8Array(n);
+
+  for (const clause of (clauses || [])) {
+    const clauseText = (clause.clause_text || '').trim();
+    if (clauseText.length < 10) continue;
+    const isRisk = riskClauseTypes.has((clause.clause_type || '').toLowerCase());
+    const level  = isRisk ? 2 : 1;
+
+    const intervals = findTextIntervals(docText, clauseText);
+    for (const { start, end } of intervals) {
+      for (let i = start; i < Math.min(end, n); i++) {
+        if (highlightMap[i] < level) highlightMap[i] = level;
+      }
+    }
+  }
+
+  // Convert flat highlight map → array of segments
+  const segments = [];
+  let start = 0;
+  for (let i = 1; i <= n; i++) {
+    const prevLevel = highlightMap[i - 1];
+    const curLevel  = i < n ? highlightMap[i] : -1;
+    if (curLevel !== prevLevel) {
+      segments.push({
+        text: docText.slice(start, i),
+        type: prevLevel === 2 ? 'risk' : prevLevel === 1 ? 'clause' : 'normal',
+      });
+      start = i;
+    }
+  }
+  return segments.length > 0 ? segments : [{ text: docText, type: 'normal' }];
+}
+
+function DocumentViewSection({ documentId, clauseResult, riskResult }) {
+  const [docText, setDocText]   = useState('');
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState('');
+  const [segments, setSegments] = useState([]);
+  const [stats, setStats]       = useState({ risks: 0, clauses: 0 });
+
+  useEffect(() => {
+    if (!documentId) return;
+    setLoading(true);
+    setError('');
+    getDocumentText(documentId)
+      .then((data) => {
+        const text = data.text || '';
+        setDocText(text);
+
+        const clauses   = clauseResult?.clauses   || [];
+        const riskIssues = riskResult?.flagged_issues || [];
+        const segs = buildHighlightSegments(text, clauses, riskIssues);
+        setSegments(segs);
+
+        // Compute stats
+        const riskTypes = new Set(riskIssues.map((r) => (r.clause_type || '').toLowerCase()));
+        const riskClauseCount = clauses.filter((c) =>
+          riskTypes.has((c.clause_type || '').toLowerCase())
+        ).length;
+        setStats({ risks: riskClauseCount, clauses: clauses.length });
+      })
+      .catch((err) => setError(err.message || 'Failed to load document text.'))
+      .finally(() => setLoading(false));
+  }, [documentId, clauseResult, riskResult]);
+
+  if (loading) {
+    return (
+      <div className="doc-view-loading">
+        <LoadingSpinner label="Loading document text…" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="form-error" role="alert">{error}</div>;
+  }
+
+  if (!docText.trim()) {
+    return <p className="section-empty">No document text available. Please re-upload the document.</p>;
+  }
+
+  return (
+    <div className="doc-view-wrapper">
+      {/* Legend */}
+      <div className="doc-view-legend">
+        <span className="doc-view-legend__title">Highlight Legend:</span>
+        <span className="doc-view-legend__item">
+          <span className="doc-view-legend__swatch doc-view-legend__swatch--risk" />
+          Risk Clause ({stats.risks})
+        </span>
+        <span className="doc-view-legend__item">
+          <span className="doc-view-legend__swatch doc-view-legend__swatch--clause" />
+          Identified Clause ({stats.clauses})
+        </span>
+        <span className="doc-view-legend__hint">
+          💡 Hover over highlighted text to see details
+        </span>
+      </div>
+
+      {/* Document text with highlights */}
+      <div className="doc-view-text" role="document" aria-label="Document text with highlights">
+        {segments.map((seg, i) => {
+          if (seg.type === 'risk') {
+            return (
+              <mark
+                key={i}
+                className="doc-highlight doc-highlight--risk"
+                title="⚠️ Risk: This clause was flagged as potentially unfair or risky"
+              >
+                {seg.text}
+              </mark>
+            );
+          }
+          if (seg.type === 'clause') {
+            return (
+              <mark
+                key={i}
+                className="doc-highlight doc-highlight--clause"
+                title="📄 Identified legal clause"
+              >
+                {seg.text}
+              </mark>
+            );
+          }
+          return <span key={i}>{seg.text}</span>;
+        })}
+      </div>
     </div>
   );
 }
@@ -670,6 +901,13 @@ export default function WorkspaceDocPage() {
               )}
               {activeTab === 'Risk Analysis' && (
                 <RiskSection riskResult={doc?.risk_result} />
+              )}
+              {activeTab === 'Document View' && (
+                <DocumentViewSection
+                  documentId={id || doc?.id}
+                  clauseResult={doc?.clause_result}
+                  riskResult={doc?.risk_result}
+                />
               )}
             </div>
           </>

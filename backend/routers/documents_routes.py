@@ -41,6 +41,7 @@ from backend.schemas import (
     DocumentAskResponse,
     DocumentDetailResponse,
     DocumentListItem,
+    DocumentTextResponse,
     DocumentUploadResponse,
     RiskFlagResponse,
 )
@@ -480,6 +481,55 @@ def get_document(
         summary_result=doc.summary_result,
         clause_result=doc.clause_result,
         risk_result=doc.risk_result,
+    )
+
+
+# ── GET /documents/{document_id}/text ────────────────────────────────────────
+
+@router.get(
+    "/{document_id}/text",
+    response_model=DocumentTextResponse,
+    summary="Get raw extracted text of a document for client-side highlighting",
+    description=(
+        "Returns the stored extracted text of the document. Used by the frontend "
+        "to render the document with highlighted risk and clause segments."
+    ),
+)
+def get_document_text(
+    document_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> DocumentTextResponse:
+    """
+    Returns the cached extracted_text for client-side highlighting.
+    Falls back to disk extraction if text was not cached at upload time.
+    """
+    doc = db.query(Document).filter(Document.id == document_id).first()
+    if doc is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found.")
+    if doc.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied.")
+
+    text = doc.extracted_text or ""
+
+    # Fallback: re-extract from disk if not cached
+    if not text.strip():
+        file_path = Path(doc.file_path)
+        if file_path.exists():
+            try:
+                ingest_result = extract_text(file_path)
+                text = ingest_result.get("text", "")
+                if text:
+                    doc.extracted_text = text
+                    db.flush()
+            except Exception:
+                text = ""
+
+    return DocumentTextResponse(
+        id=doc.id,
+        filename=doc.filename,
+        text=text,
+        char_count=len(text),
     )
 
 
