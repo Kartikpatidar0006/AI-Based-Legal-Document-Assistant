@@ -1,23 +1,67 @@
-# Dependencies
-node_modules/
+# =============================================================================
+# Git Ignore Configuration
+# AI-Based Legal Document Assistant for Small Businesses
+# =============================================================================
+
+# Python Bytecode & Environments
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
 venv/
 .venv/
 env/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Environment variables
+# Environment Variables & Secrets
 .env
-.env.local
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
 
-# IDE & Editor files
+# Runtime Uploads & Audio Caching (preserve directory via .gitkeep)
+uploads/*
+!uploads/.gitkeep
+audio_cache/*
+!audio_cache/.gitkeep
+
+# Node / Frontend Build Outputs
+node_modules/
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE, OS & Editor Temp Files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 .DS_Store
+Thumbs.db
+desktop.ini
 
-# Logs & Temp
+# Logs & Temporary Files
 *.log
-dist/
-build/
+*.tmp
+.pytest_cache/
