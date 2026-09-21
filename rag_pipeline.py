@@ -511,6 +511,132 @@ def answer_query(
     }
 
 
+def answer_document_query(
+    question: str,
+    document_text: str,
+    filename: str,
+    chat_history: list[dict] | None = None,
+) -> dict:
+    """
+    Document-specific Q&A pipeline:
+    Answers a question grounded strictly in the provided document's text,
+    without querying the generic template knowledge base in ChromaDB.
+
+    If document_text exceeds 18,000 characters, it splits the text into sections
+    and uses in-memory semantic similarity with sentence-transformers to select
+    the most relevant sections.
+
+    Supports recent chat_history (e.g. [{"question": ..., "answer": ...}])
+    for conversational follow-up turns.
+
+    Args:
+        question: User's question about this document
+        document_text: Extracted plain text of the document
+        filename: Document filename (e.g. 'EMPLOYMENT-AGREEMENT.pdf')
+        chat_history: Optional recent turns (list of {"question": str, "answer": str})
+
+    Returns:
+        {
+            "question":   str,
+            "answer":     str,
+            "filename":   str,
+            "disclaimer": str,
+        }
+    """
+    if not question or not question.strip():
+        return {
+            "question": question,
+            "answer": "Please provide a non-empty question.",
+            "filename": filename,
+            "disclaimer": LEGAL_DISCLAIMER,
+        }
+
+    if not document_text or not document_text.strip():
+        return {
+            "question": question,
+            "answer": f"No readable text available for '{filename}' to answer this question.",
+            "filename": filename,
+            "disclaimer": LEGAL_DISCLAIMER,
+        }
+
+    # Step 1: Context resolution (chunk & rank if document is very long)
+    context_text = document_text.strip()
+    if len(context_text) > 18_000:
+        try:
+            from langchain_text_splitters import RecursiveCharacterTextSplitter
+            import numpy as np
+
+            splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
+            chunks = splitter.split_text(context_text)
+
+            if len(chunks) > 1:
+                _, embed_model, _ = _get_clients()
+                q_emb = embed_model.encode(question, convert_to_numpy=True)
+                c_embs = embed_model.encode(chunks, convert_to_numpy=True)
+                sims = np.dot(c_embs, q_emb) / (
+                    np.linalg.norm(c_embs, axis=1) * np.linalg.norm(q_emb) + 1e-9
+                )
+                top_indices = np.argsort(sims)[::-1][:6]
+                top_indices = sorted(top_indices)  # preserve narrative document order
+                selected_chunks = [chunks[i] for i in top_indices]
+                context_text = "\n\n[...]\n\n".join(selected_chunks)
+        except Exception as exc:
+            print(f"  ⚠️  In-memory similarity retrieval failed: {exc}, using truncation fallback.")
+            context_text = context_text[:18_000] + "\n\n[... Document truncated to first 18,000 characters ...]"
+
+    # Step 2: Format recent chat history if provided
+    history_block = ""
+    if chat_history:
+        recent_history = chat_history[-4:]
+        history_lines = ["PREVIOUS CONVERSATION CONTEXT:"]
+        for turn in recent_history:
+            q_turn = str(turn.get("question", "")).strip()
+            a_turn = str(turn.get("answer", "")).strip()
+            if q_turn and a_turn:
+                history_lines.append(f"User: {q_turn}")
+                history_lines.append(f"Assistant: {a_turn}")
+        if len(history_lines) > 1:
+            history_block = "\n".join(history_lines) + "\n\n"
+
+    # Step 3: Build document-grounded prompt
+    system_instruction = (
+        "You are an AI Legal Document Assistant analyzing a SPECIFIC uploaded document for a small business.\n\n"
+        "STRICT INSTRUCTIONS:\n"
+        f"1. You are answering questions exclusively about the uploaded document: '{filename}'.\n"
+        "2. Answer ONLY using facts directly stated or clearly implied in the provided DOCUMENT CONTENT below.\n"
+        "3. Do NOT assume, speculate, or reference generic template practices not present in this document.\n"
+        "4. If the question cannot be answered from the document, state clearly: "
+        f"\"I don't have enough information in '{filename}' to answer this question.\"\n"
+        "5. If answering about clauses, obligations, risks, or penalties, cite specific section numbers, clauses, "
+        "or exact wording from the document whenever available.\n"
+        "6. Write in clear, structured, plain language suitable for a small business owner.\n"
+        f"7. End your response with this exact disclaimer:\n\"{LEGAL_DISCLAIMER}\"\n"
+    )
+
+    prompt = (
+        f"{system_instruction}\n"
+        f"─" * 60 + "\n"
+        f"DOCUMENT CONTENT ({filename}):\n"
+        f"─" * 60 + "\n"
+        f"{context_text}\n"
+        f"─" * 60 + "\n\n"
+        f"{history_block}"
+        f"USER QUESTION: {question}\n\n"
+        f"YOUR ANSWER (grounded strictly in '{filename}'):"
+    )
+
+    # Step 4: Call Gemini
+    _, _, gemini_client = _get_clients()
+    answer_text = call_gemini(prompt, gemini_client)
+
+    return {
+        "question": question,
+        "answer": answer_text,
+        "filename": filename,
+        "disclaimer": LEGAL_DISCLAIMER,
+    }
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # CLI — pretty-print the answer when run directly
 # ─────────────────────────────────────────────────────────────────────────────

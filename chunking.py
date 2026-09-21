@@ -43,7 +43,7 @@ def load_documents(json_path: Path) -> list[dict]:
     if not json_path.exists():
         raise FileNotFoundError(
             f"Input file not found: {json_path}\n"
-            "Please run week2_text_extraction.py first to generate all_documents.json."
+            "Please run document_ingest.py first to generate all_documents.json."
         )
 
     try:

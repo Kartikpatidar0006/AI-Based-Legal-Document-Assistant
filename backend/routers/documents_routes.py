@@ -513,7 +513,7 @@ def get_audio_summary(
         1. Fetch document and enforce ownership (404 / 403).
         2. Ensure document has been analyzed (status == 'ready'); return 400 if not.
         3. Retrieve stored summary text (from audio_cache/{doc.id}_summary.txt or re-summarize).
-        4. Call voice_walkthrough.generate_audio_summary() -> cached/generated Path.
+        4. Call document_processor.generate_audio_summary() -> cached/generated Path.
         5. Return FileResponse with media_type="audio/mpeg".
     """
     doc = db.query(Document).filter(Document.id == document_id).first()

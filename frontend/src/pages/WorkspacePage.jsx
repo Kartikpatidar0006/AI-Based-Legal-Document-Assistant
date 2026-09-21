@@ -197,14 +197,14 @@ function DocCard({ msg, onView }) {
         {msg.phase === 'done' && msg.docId && (
           <div className="ca-doc-card__footer">
             <p className="ca-doc-card__done-text">
-              Your document has been analysed. View the full Summary, Clauses, and Risk Report.
+              Your document has been analysed. View the Summary, Clauses, and Risk Report, or ask questions grounded in this document.
             </p>
             <button
               type="button"
               className="ca-doc-card__view-btn"
               onClick={() => onView(msg.docId)}
             >
-              View Full Analysis →
+              Open Document Workspace &amp; Q&amp;A →
             </button>
           </div>
         )}
