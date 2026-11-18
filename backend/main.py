@@ -78,13 +78,20 @@ app = FastAPI(
 # CORS
 # ─────────────────────────────────────────────────────────────────────────────
 
+# Read allowed origins from ALLOWED_ORIGINS env var (comma-separated), default to http://localhost:5173
+import os
+raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
+allowed_origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+if not allowed_origins:
+    allowed_origins = ["http://localhost:5173"]
+
+# Allow credentials only when specific origins are configured (disallowed with wildcard "*")
+allow_credentials = "*" not in allowed_origins
+
 app.add_middleware(
     CORSMiddleware,
-    # Local development: allow all origins so the React dev server
-    # (any port) can reach the API without preflight rejections.
-    # Restrict this to specific domains before deploying to production.
-    allow_origins=["*"],
-    allow_credentials=False,   # Must be False when allow_origins=["*"]
+    allow_origins=allowed_origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -97,27 +104,37 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup() -> None:
     """
-    Validate environment variables and initialize database tables.
+    Validate environment variables, ensure runtime storage directories exist,
+    and initialize database tables.
     """
-    import os
-    
     # ── 1. Validate required environment variables ────────────────────────────
     missing_vars = []
-    if not os.getenv("JWT_SECRET_KEY"):
-        missing_vars.append("JWT_SECRET_KEY")
+    if not (os.getenv("SECRET_KEY") or os.getenv("JWT_SECRET_KEY")):
+        missing_vars.append("SECRET_KEY (or JWT_SECRET_KEY)")
     if not os.getenv("DATABASE_URL"):
         missing_vars.append("DATABASE_URL")
-    if not os.getenv("GEMINI_API_KEY"):
+    if not (os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")):
         missing_vars.append("GEMINI_API_KEY")
 
     if missing_vars:
         print(f"⚠️  WARNING: Missing required environment variable(s): {', '.join(missing_vars)}")
         print("   Authentication, database, or AI analysis features may fail.")
-        print("   Please check your .env configuration file.")
+        print("   Please check your Hugging Face Space secrets or .env configuration.")
     else:
-        print("✅ Environment variables verified (JWT_SECRET_KEY, DATABASE_URL, GEMINI_API_KEY configured).")
+        print("✅ Environment variables verified (SECRET_KEY, DATABASE_URL, GEMINI_API_KEY configured).")
 
-    # ── 2. Database table safety-net ──────────────────────────────────────────
+    # ── 2. Ensure upload and ChromaDB paths exist ─────────────────────────────
+    uploads_dir = _PROJECT_ROOT / "uploads"
+    uploads_dir.mkdir(parents=True, exist_ok=True)
+
+    vector_db_dir = _PROJECT_ROOT / "data" / "vector_db"
+    vector_db_dir.mkdir(parents=True, exist_ok=True)
+
+    audio_cache_dir = _PROJECT_ROOT / "audio_cache"
+    audio_cache_dir.mkdir(parents=True, exist_ok=True)
+    print("✅ Runtime storage directories verified (uploads/, data/vector_db/, audio_cache/).")
+
+    # ── 3. Database table safety-net ──────────────────────────────────────────
     try:
         # Import all models so Base.metadata knows about them
         import backend.models  # noqa: F401
@@ -125,7 +142,7 @@ def on_startup() -> None:
         print("✅ Database tables verified / created.")
     except Exception as exc:
         print(f"⚠️  Database startup check failed: {exc}")
-        print("   Make sure PostgreSQL is running and DATABASE_URL in .env is correct.")
+        print("   Make sure PostgreSQL is running and DATABASE_URL is correct.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────

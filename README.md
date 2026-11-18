@@ -1,3 +1,13 @@
+---
+title: LegalEase AI Backend
+emoji: ⚖️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # AI-Based Legal Document Assistant for Small Businesses
 
 > **An intelligent, full-stack AI assistant tailored for Indian MSMEs, startups, and small businesses to analyze, summarize, risk-check, and query complex legal documents.**

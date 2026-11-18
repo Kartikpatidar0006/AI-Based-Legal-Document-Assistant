@@ -18,19 +18,30 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-# ── Load .env from the project root (one level above backend/) ────────────────
+# ── Load .env from the project root (environment variables take precedence) ───
 _ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(dotenv_path=_ENV_PATH, override=True)
+if _ENV_PATH.exists():
+    load_dotenv(dotenv_path=_ENV_PATH, override=False)
+else:
+    load_dotenv(override=False)
 
-# ── Read DATABASE_URL ─────────────────────────────────────────────────────────
-DATABASE_URL: str = os.getenv("DATABASE_URL", "")
+# ── Read DATABASE_URL strictly from environment ──────────────────────────────
+DATABASE_URL: str = os.getenv("DATABASE_URL", "").strip()
 
 if not DATABASE_URL:
     raise EnvironmentError(
-        "DATABASE_URL not set in .env\n"
-        "Add a line like:\n"
-        "  DATABASE_URL=postgresql://user:password@localhost:5432/legal_doc_db"
+        "DATABASE_URL not set in environment.\n"
+        "Please configure DATABASE_URL in your environment variables."
     )
+
+# Fix for SQLAlchemy requiring postgresql:// instead of legacy postgres:// scheme
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Ensure Neon serverless PostgreSQL connection includes sslmode=require
+if "neon.tech" in DATABASE_URL and "sslmode=" not in DATABASE_URL:
+    delimiter = "&" if "?" in DATABASE_URL else "?"
+    DATABASE_URL = f"{DATABASE_URL}{delimiter}sslmode=require"
 
 # ── SQLAlchemy engine ─────────────────────────────────────────────────────────
 # pool_pre_ping=True: test connections before using them, avoids stale-connection errors

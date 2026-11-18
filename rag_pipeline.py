@@ -75,18 +75,16 @@ def load_api_key() -> str:
     Supports both GOOGLE_API_KEY and GEMINI_API_KEY variable names.
     Raises EnvironmentError with a helpful message if neither is found.
     """
-    load_dotenv(override=True)  # reads .env and overrides any stale system env vars
+    load_dotenv(override=False)  # system/container environment variables take precedence
 
-    # Support both naming conventions, prioritizing GEMINI_API_KEY from .env
-    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    # Support both naming conventions, prioritizing GEMINI_API_KEY
+    api_key = (os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", "")).strip()
 
-    if not api_key:
+    if not api_key or api_key in ("your_gemini_api_key_here", "your_api_key_here"):
         raise EnvironmentError(
-            "Gemini API key not found!\n"
-            "Please add one of these to your .env file:\n"
-            "  GOOGLE_API_KEY=your_key_here\n"
-            "  GEMINI_API_KEY=your_key_here\n"
-            "Get a free key at: https://aistudio.google.com/app/apikey"
+            "Gemini API key not found in environment.\n"
+            "Please configure GEMINI_API_KEY in your environment variables.\n"
+            "Get a key at: https://aistudio.google.com/app/apikey"
         )
 
     # Sync OS environment variables so SDK consistently uses the newly loaded key

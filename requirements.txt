@@ -1,41 +1,38 @@
-# AI-Based Legal Document Assistant Dependencies
-# Week 3 additions marked with [W3]
-# Week 4 additions marked with [W4]
+--extra-index-url https://download.pytorch.org/whl/cpu
 
-# Core LLM / RAG
-google-generativeai              # [W4] Gemini API SDK
-langchain
-langchain-text-splitters        # [W3] RecursiveCharacterTextSplitter
-llama-index
+# PyTorch (CPU-only wheel to keep Docker image small)
+torch
 
-# API / Backend
-fastapi                          # [W5] FastAPI web framework
-uvicorn[standard]                # [W5] ASGI server
-sqlalchemy                       # [W5] ORM (2.0 style mapped_column)
-psycopg2-binary                  # PostgreSQL adapter for SQLAlchemy
-python-multipart                 # [W5] Required for FastAPI file upload (UploadFile)
-python-jose[cryptography]        # [W5] JWT creation and verification
-passlib[bcrypt]                  # [W5] Password hashing (bcrypt)
-email-validator                  # [W5] Pydantic EmailStr validation
-pydantic>=2.0                    # [W5] Pydantic v2 schemas and validation
+# Web Framework & ASGI Server
+fastapi==0.115.14
+uvicorn[standard]==0.30.6
+pydantic==2.13.5
+email-validator==2.3.0
+python-multipart==0.0.20
 
-# Embeddings & Vector DB
-sentence-transformers            # all-MiniLM-L6-v2 model
-chromadb                         # local persistent vector store
+# Database & ORM
+SQLAlchemy==2.0.51
+psycopg2-binary==2.9.10
 
-# PDF & Document Extraction
-pymupdf                          # PDF native text extraction
-python-docx                      # [W5+] DOCX / Word document extraction
+# Security & Authentication
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+python-jose[cryptography]==3.5.0
 
-# OCR (image files + scanned PDFs)
-pytesseract                      # Python wrapper for Tesseract binary
-pillow                           # Image loading + preprocessing for OCR
+# Gemini AI SDK & Vector Retrieval
+google-genai==2.17.0
+langchain-text-splitters==1.1.2
+sentence-transformers==5.7.0
+chromadb==1.5.9
 
-# Database
-psycopg2-binary                  # [W3] PostgreSQL adapter
+# Document Parsing & OCR
+pymupdf==1.28.2
+python-docx==1.2.0
+pillow==12.3.0
+pytesseract==0.3.13
 
-# Utilities
-python-dotenv
+# Audio Walkthrough (TTS)
+gTTS==2.5.4
 
-# Voice / Text-to-Speech
-gTTS>=2.5.4
+# Environment Configuration
+python-dotenv==1.2.1

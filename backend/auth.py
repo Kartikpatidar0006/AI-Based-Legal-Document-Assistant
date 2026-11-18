@@ -22,20 +22,24 @@ from fastapi import HTTPException, status
 from jose import JWTError, ExpiredSignatureError, jwt
 from passlib.context import CryptContext
 
-# ── Load .env ─────────────────────────────────────────────────────────────────
+# ── Load .env (environment variables take precedence) ────────────────────────
 _ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(dotenv_path=_ENV_PATH, override=True)
+if _ENV_PATH.exists():
+    load_dotenv(dotenv_path=_ENV_PATH, override=False)
+else:
+    load_dotenv(override=False)
 
 # ── JWT config ────────────────────────────────────────────────────────────────
-JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "")
+# Read SECRET_KEY or JWT_SECRET_KEY strictly from environment
+JWT_SECRET_KEY: str = (os.getenv("SECRET_KEY") or os.getenv("JWT_SECRET_KEY", "")).strip()
 JWT_ALGORITHM: str  = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS: int = 24  # tokens last 24 hours
 
-if not JWT_SECRET_KEY:
+if not JWT_SECRET_KEY or JWT_SECRET_KEY in ("your_32_byte_random_hex_secret_here", "your_secret_key_here"):
     raise EnvironmentError(
-        "JWT_SECRET_KEY not set in .env\n"
+        "SECRET_KEY (or JWT_SECRET_KEY) not set in environment.\n"
         "Generate one with:  python -c \"import secrets; print(secrets.token_hex(32))\"\n"
-        "Then add to .env:   JWT_SECRET_KEY=<the generated value>"
+        "Then configure SECRET_KEY in your environment variables."
     )
 
 # ── Password hashing ──────────────────────────────────────────────────────────
