@@ -1,0 +1,9 @@
+Metric,B1: Ungrounded,B2: BM25 + LLM,P: Proposed RAG
+P@7,N/A,0.2024,0.2619
+MRR,N/A,0.8333,0.5278
+Top-1 similarity,N/A,N/A,0.7953
+Faithfulness (%),48.46,55.56,57.56
+Citation accuracy (%),N/A,93.33,83.33
+Hallucination rate (%),0.0,0.0,6.67
+Abstention accuracy (%),0.0,33.33,33.33
+Median latency (s),8.915,3.291,6.818

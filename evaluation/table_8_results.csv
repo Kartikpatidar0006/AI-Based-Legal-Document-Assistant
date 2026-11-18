@@ -1,0 +1,7 @@
+Seeded issue type,Seeded,Detected,Precision,Recall
+One-sided termination,1,1,100.0%,100.0%
+Excessive working hours,1,1,100.0%,100.0%
+Broad non-compete,1,1,100.0%,100.0%
+Unilateral deductions,1,1,50.0%,100.0%
+Missing standard clause,3,3,75.0%,100.0%
+Overall,7,7,77.8%,100.0%

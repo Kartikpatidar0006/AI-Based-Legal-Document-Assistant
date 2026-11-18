@@ -1,0 +1,8 @@
+seeded_issue_type,contract_id,clause_reference,description,present_in_doc,expected_detection
+one-sided termination,Sample_2,Clause 4,"Employer can terminate at any time without notice or severance; Employee must give 60 days notice and forfeits salary if they don't",YES,YES
+excessive working hours,Sample_2,Clause 3,"No fixed upper limit on working hours, no overtime pay",YES,YES
+broad non-compete,Sample_2,Clause 5,"3-year non-compete covering all of India for any retail business",YES,YES
+unilateral deductions,Sample_2,Clause 7,"Employer can deduct salary for damages/losses without proof of fault or investigation",YES,YES
+missing standard clause,Sample_3,MISSING,"No termination/notice-period clause in rental agreement",NO,DETECT_ABSENCE
+missing standard clause,Sample_3,MISSING,"No security deposit refund conditions or deduction terms",NO,DETECT_ABSENCE
+missing standard clause,Sample_3,MISSING,"No dispute resolution or governing law clause",NO,DETECT_ABSENCE

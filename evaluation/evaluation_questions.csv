@@ -1,0 +1,16 @@
+qid,question,contract_id,expected_risk_issues,expected_clauses_present,ground_truth_risk_level
+Q01,"Does this contract allow the employer to terminate the employee without any notice period?",Sample_2,"one-sided termination","Clause 4 - Termination",HIGH
+Q02,"Are the working hours fixed or can they be made unlimited?",Sample_2,"excessive working hours","Clause 3 - Working Hours",HIGH
+Q03,"What is the non-compete restriction and is it reasonable?",Sample_2,"broad non-compete","Clause 5 - Non-Compete",HIGH
+Q04,"Can the employer deduct salary without proving the employee was at fault?",Sample_2,"unilateral deductions","Clause 7 - Deductions",HIGH
+Q05,"Is there a dispute resolution mechanism in this contract?",Sample_3,"missing standard clause","MISSING - no dispute resolution",HIGH
+Q06,"What are the termination notice requirements for both parties?",Sample_3,"missing standard clause","MISSING - no termination clause",HIGH
+Q07,"Are the confidentiality obligations time-limited?",Sample_2,"broad non-compete","Clause 6 - Confidentiality",HIGH
+Q08,"What is the payment schedule and are the payment terms fair?",Sample_1,"none","Clause 3 - Payment Terms",LOW
+Q09,"What happens to intellectual property when the contract ends?",Sample_1,"none","Clause 6 - Intellectual Property",LOW
+Q10,"How long does the confidentiality obligation survive after this NDA ends?",Sample_4,"none","Clause 5 - Term and Survival",LOW
+Q11,"Can either party terminate the NDA discussions at any time?",Sample_4,"none","Clause 6 - No Obligation to Proceed",LOW
+Q12,"What remedies are available if one party breaches this NDA?",Sample_4,"none","Clause 8 - Remedies",LOW
+Q13,"Is there a security deposit refund clause in this rental agreement?",Sample_3,"missing standard clause","MISSING - no security deposit refund terms",HIGH
+Q14,"Does the service agreement limit liability? What are the limits?",Sample_1,"none","Clause 7 - Limitation of Liability",LOW
+Q15,"What is the governing law and jurisdiction of this agreement?",Sample_1,"none","Clause 9 - Governing Law",LOW
